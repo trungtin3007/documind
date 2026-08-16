@@ -41,6 +41,8 @@ Comfortable with Python, full-stack (.NET, React, Node), Git, Docker. **Newer to
 <!-- BEGIN STATE -->
 ## State
 - Last updated: 2026-08-15
+- **Repo: https://github.com/trungtin3007/documind (PUBLIC), branch `main`.** First commit `f54305b` covers Weeks 0-3. Pushed via `gh`, account `trungtin3007`.
+- **Never commit:** `.env` (holds `VOYAGE_API_KEY`, `GEMINI_API_KEY`) and `sample.pdf` (third-party copyrighted paper, repo is public). Both are in `.gitignore`; verified absent from the remote. Also ignored: `venv/`, `venv_py39_old/`, `pages/`, `index/`, `results/`, `verify/`, `__pycache__/`. Tracked: code, `eval_set.json`, `eval_results.json`, `RESULTS.md`, `CLAUDE.md`.
 - **Weeks 0-3 done.** Pipeline: `pdf_to_images.py` -> `build_index.py` (Voyage `voyage-multimodal-3`, 116 pages) -> `retrieval.py` (`search(question, k)`) -> `generate.py` (`answer()` reads top-3 page images with Gemini `gemini-3.5-flash-lite`, JSON-schema grounded, cites pages). CLIs: `search.py`, `generate.py`. Plan B confirmed: no ColPali/Colab needed.
 - **Week 3 eval harness complete and run on fully verified labels.** `eval_set.json` (28 questions, **all `verified:true`, confirmed by the developer**), `eval.py` (hit@1/3/5 + MRR at k=5, generation top-3, breakdowns by scope AND by author, `--verified-only/--only/--no-judge/--resume`), `judge.py` (reference-based judge on a separate model `gemini-3.6-flash`, never sees page images), `find_collisions.py`, `verify_labels.py`, `api_retry.py`, `make_results.py`.
 - **RESULTS.md is generated, never hand-written** — `make_results.py` reads every number from `eval_results.json`. Regenerate after any eval run.
