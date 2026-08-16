@@ -1,0 +1,1417 @@
+{
+  "run_at": "2026-08-16T16:13:11",
+  "provisional": false,
+  "summary_over": [
+    "m01",
+    "m02",
+    "m03",
+    "m04",
+    "m05",
+    "m06",
+    "m07",
+    "m08",
+    "m09",
+    "m10",
+    "m11",
+    "m12",
+    "a01",
+    "a02",
+    "a03",
+    "a04",
+    "a05",
+    "a06",
+    "a07",
+    "a08",
+    "u01",
+    "u02",
+    "u03",
+    "u04",
+    "u05",
+    "u06",
+    "u07",
+    "u08"
+  ],
+  "config": {
+    "retrieval_k": 5,
+    "generation_k": 3,
+    "answer_model": "gemini-3.5-flash-lite",
+    "judge_model": "gemini-3.6-flash",
+    "embed_model": "voyage-multimodal-3",
+    "seed": 7,
+    "method": "hybrid-embedding"
+  },
+  "summary": {
+    "overall": {
+      "n": 28,
+      "hit@1": 0.6785714285714286,
+      "hit@3": 0.9642857142857143,
+      "hit@5": 1.0,
+      "mrr": 0.8125,
+      "cited_gold": 0.8571428571428571,
+      "n_judged": 26,
+      "correct": 0.8461538461538461,
+      "partial": 0.15384615384615385,
+      "wrong": 0.0,
+      "error": 0.0,
+      "ungraded": 0.07142857142857142
+    },
+    "main": {
+      "n": 13,
+      "hit@1": 0.6153846153846154,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "mrr": 0.782051282051282,
+      "cited_gold": 1.0,
+      "n_judged": 13,
+      "correct": 0.9230769230769231,
+      "partial": 0.07692307692307693,
+      "wrong": 0.0,
+      "error": 0.0,
+      "ungraded": 0.0
+    },
+    "appendix": {
+      "n": 10,
+      "hit@1": 0.9,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "mrr": 0.95,
+      "cited_gold": 0.9,
+      "n_judged": 9,
+      "correct": 1.0,
+      "partial": 0.0,
+      "wrong": 0.0,
+      "error": 0.0,
+      "ungraded": 0.1
+    },
+    "ambiguous": {
+      "n": 5,
+      "hit@1": 0.4,
+      "hit@3": 0.8,
+      "hit@5": 1.0,
+      "mrr": 0.6166666666666667,
+      "cited_gold": 0.4,
+      "n_judged": 4,
+      "correct": 0.25,
+      "partial": 0.75,
+      "wrong": 0.0,
+      "error": 0.0,
+      "ungraded": 0.2
+    },
+    "by_author": {
+      "claude": {
+        "n": 20,
+        "hit@1": 0.8,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 0.8833333333333334,
+        "cited_gold": 1.0,
+        "n_judged": 20,
+        "correct": 1.0,
+        "partial": 0.0,
+        "wrong": 0.0,
+        "error": 0.0,
+        "ungraded": 0.0
+      },
+      "developer": {
+        "n": 8,
+        "hit@1": 0.375,
+        "hit@3": 0.875,
+        "hit@5": 1.0,
+        "mrr": 0.6354166666666666,
+        "cited_gold": 0.5,
+        "n_judged": 6,
+        "correct": 0.3333333333333333,
+        "partial": 0.6666666666666666,
+        "wrong": 0.0,
+        "error": 0.0,
+        "ungraded": 0.25
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "m01",
+      "question": "What three operational functions does the encrypted reasoning envelope serve?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_004.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_004.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "As stated on page 4, the design has three critical operational functions:\n1. Confidentiality: By rendering the reasoning steps mathematically opaque, model providers block competitors from mass-harvesting explicit chain-of-thought data for model distillation and limit exposure of a potentially sensitive or harmful reasoning.\n2. Integrity: The AEAD envelope and MAC ensure that the intermediate reasoning cannot be maliciously altered by the user; any tampering invalidates the signature and can be rejected by the API, preventing manipulated reasoning from being used to steer the model.\n3. Statelessness: Rather than incurring overheads of storing reasoning states, providers leverage client-side storage. The client is required to hold the encrypted trace and pass it back in subsequent API calls to maintain the continuity within multi-turn session.",
+      "cited_pages": [
+        "page_004.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies and describes all three operational functions: Confidentiality, Integrity, and Statelessness.",
+      "author": "claude"
+    },
+    {
+      "id": "m02",
+      "question": "Which weakest model was used as the decoder for each provider in the extraction attack?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_005.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "For each provider, the weakest compatible model that enables extraction is:\n- Claude: \"Haiku 4.5\"\n- GPT: \"GPT-5.6 Luna\"\n- Gemini: \"Gemini Robotics 1.6\"",
+      "cited_pages": [
+        "page_005.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system correctly lists the specific weakest model for each of the three providers as stated in the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "m03",
+      "question": "How many distinct PII artifacts and how many credentials were recovered from the scraped reasoning blocks?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_008.png",
+        "page_003.png",
+        "page_001.png",
+        "page_010.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0317
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "From the scraped reasoning blocks (from genuine user sessions alone), there were 367 Personally Identifiable Information (PII) artifacts and 182 credentials recovered.",
+      "cited_pages": [
+        "page_008.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies both the 367 PII artifacts and the 182 credentials.",
+      "author": "claude"
+    },
+    {
+      "id": "m04",
+      "question": "How many reasoning blocks were scraped and decoded in the large-scale privacy analysis?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_003.png",
+        "page_001.png",
+        "page_008.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0312
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "According to the provided pages, 315,320 reasoning blocks were decoded (or reconstructed from sessions) in the large-scale analysis (e.g., page 8 states: \"Applying the decoding scheme of Section 2.4 to every signed block, yields 315,320 reconstructed reasoning traces across sessions\"; page 3 and page 62 also reference \"315,320 reasoning blocks\").",
+      "cited_pages": [
+        "page_003.png",
+        "page_008.png",
+        "page_062.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies that 315,320 reasoning blocks were decoded.",
+      "author": "claude"
+    },
+    {
+      "id": "m05",
+      "question": "What four attack vectors does the vulnerability enable?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_003.png",
+        "page_001.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_007.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_019.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 3,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.3333333333333333,
+      "answer": "The vulnerability enables four concrete cases of abuse (attack vectors):\n(i) \"distillation of proprietary reasoning traces\"\n(ii) \"secret extraction of credentials and PII from published or committed traces by third parties\"\n(iii) \"hidden prompt injection through poisoned reasoning blocks\"\n(iv) \"jailbreaking by extracting harmful output via the hidden reasoning channel\"",
+      "cited_pages": [
+        "page_003.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer lists all four attack vectors exactly as described in the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "m06",
+      "question": "According to the cross-model compatibility table, which Claude model is the exception whose thinking traces cannot be replayed by other Claude models?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_004.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_004.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0303
+        },
+        {
+          "page": "page_053.png",
+          "score": 0.0303
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.0302
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "According to Table 1, Fable 5 is the exception: \"Claude: the thinking traces of any model can be replayed by any other, except Fable 5's thoughts.\"",
+      "cited_pages": [
+        "page_004.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system correctly identifies Fable 5 as the exception whose thinking traces cannot be replayed by other Claude models.",
+      "author": "claude"
+    },
+    {
+      "id": "m07",
+      "question": "What fraction of the decoded thinking blocks contained at least one privacy leakage, and what fraction of sessions?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_008.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.031
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "Out of 315,320 decoded thinking blocks, 0.3% (1,028) contain at least one privacy leakage. For sessions, out of the 6,708 sessions, 4.9% (328) leak at least one real sensitive item across their reasoning blocks.",
+      "cited_pages": [
+        "page_008.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer accurately provides both requested fractions (0.3% of thinking blocks and 4.9% of sessions) matching the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "m08",
+      "question": "What capabilities does the threat model assume the attacker has?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_003.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_007.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_006.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0307
+        }
+      ],
+      "gold_rank": 3,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.3333333333333333,
+      "answer": "The threat model assumes a standard, unprivileged API adversary with the following capabilities and limitations:\n- The attacker \"does not require insider access to the provider's infrastructure, cannot observe server-side states, and has no access to the proprietary model weights. Instead, the adversary operates entirely within the boundaries of standard API usage.\"\n- The paper considers two attacker profiles:\n  1. \"First-Party Attacker (Distillation & Jailbreaking): The adversary generates their own encrypted reasoning traces by querying a capable, safeguarded target model. They then exploit cross-model compatibility to replay these traces into a weaker, cheaper decoder model to deliberately bypass alignment guardrails or extract proprietary chains of thought.\"\n  2. \"Third-Party Attacker (Secret Extraction & Prompt Injection): The adversary intercepts, scrapes, or otherwise acquires legitimate encrypted reasoning blobs generated by other users \u2014 such as developers publishing raw agent session logs online. The attacker then leverages cross-user compatibility to act as a decryption oracle, uncovering sensitive data hidden in the victim\u2019s traces, or injecting maliciously crafted opaque blocks back into the victim\u2019s workflow.\"\n- Furthermore, \"[t]he common attack prerequisite is access to a compatible \"decoder\" model within the provider ecosystem.\"",
+      "cited_pages": [
+        "page_003.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer includes all facts from the reference answer regarding the standard, unprivileged API adversary, along with additional details.",
+      "author": "claude"
+    },
+    {
+      "id": "m09",
+      "question": "Who was the vulnerability disclosed to, and what was the outcome of the disclosure?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_010.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_010.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_078.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0306
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "Prior to the publication of the report, the vulnerabilities and extraction methodologies were disclosed to \"the affected major model API providers, Microsoft, and Hugging Face.\" \n\nRegarding the outcome of the disclosure: \"According to the Green, the providers did not acknowledge 'any security implications arising from side channels or replay attacks.' All model providers acknowledged the receipt of our report and subsequently we were unable to launch the same attacks.\"",
+      "cited_pages": [
+        "page_010.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies who the vulnerability was disclosed to and the outcome that all providers acknowledged receipt and the attacks could no longer be launched.",
+      "author": "claude"
+    },
+    {
+      "id": "m10",
+      "question": "How did the authors measure whether the extracted reasoning was faithful?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_054.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.0304
+        },
+        {
+          "page": "page_039.png",
+          "score": 0.0299
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "To measure the faithfulness of the extracted reasoning, the authors used \"the ratio of extracted reasoning tokens to API-reported thinking tokens.\" They also compared \"the API's reported thinking-token counts against the token counts of the extracted reasoning, re-encoded as input to the same model, on a set of 120 Codeforces problems.\"",
+      "cited_pages": [
+        "page_005.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer accurately describes using the ratio of extracted tokens to API-reported tokens and comparing token counts across 120 Codeforces problems.",
+      "author": "claude"
+    },
+    {
+      "id": "m11",
+      "question": "From genuine (non-benchmark) user sessions alone, what secrets were recovered and in what quantities?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_009.png",
+        "page_003.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "From genuine (non-benchmark) user sessions, the following secrets and quantities were recovered:\n\nFrom page 8: \"From the genuine (non-benchmark) user sessions, the recovered secrets include 62 distinct API keys, 33 passwords, 24 access tokens, 7 private keys, 30 personal emails, and 6 non-localhost IP addresses (alongside 130 names and 36 postal addresses; Appendix D).\"\n\nThese quantities are also detailed in Table 4 on page 62 under the \"Non-benchmark\" column (showing totals of 130 names, 36 addresses, 30 emails, 3 dates of birth, 1 government ID, 0 payment cards, 4 phones, 24 access tokens, 62 API keys, 33 passwords, 7 private keys, 6 IP addresses, 32 URLs, 279 file or repository paths, 14 internal identifiers, 17 account identifiers, 3 session identifiers, and 23 other items).",
+      "cited_pages": [
+        "page_008.png",
+        "page_009.png",
+        "page_062.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer includes all the exact secrets and quantities specified in the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "m12",
+      "question": "What are the two thought-injection schemes, and which models accept past-turn injection?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_005.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0312
+        },
+        {
+          "page": "page_053.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "The two thought-injection schemes shown in Figure 2 are \"Current Turn Injection\" and \"Past Turn Injection\" (Page 5). Past-turn injection is available only against models that do not omit previous reasoning blocks (e.g., Sonnet 5, Opus 4.8, Fable 5, and the GPT-5.6 series) (Page 5).",
+      "cited_pages": [
+        "page_005.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies both thought-injection schemes and lists all the models that accept past-turn injection as stated in the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "a01",
+      "question": "In the proposed context-bound envelope defense, what does the hash chain bind each reasoning block to?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_020.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_020.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_019.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_006.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "According to the provided pages, the hash chain (or lightweight hash chain) binds each user turn and reasoning block \"only to its session and its immediate predecessor\" (as stated on page 20), and Table 2 on page 19 similarly lists the mitigation for cross-session leakage as \"Session + predecessor binding\" using a \"Hash-chain each envelope to session_id and its predecessor (Eq. 1)\".",
+      "cited_pages": [
+        "page_019.png",
+        "page_020.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly states that the hash chain binds each block to its session and immediate predecessor, which matches the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "a02",
+      "question": "What are the four design properties P1 to P4 of the chained envelope scheme?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_020.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_020.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_019.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_006.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0304
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "The four design properties P1 to P4 of the chained envelope scheme are:\n\n- **P1 (Reasoning Ordinality):** Block $X$ must be verifiably prior to block $Y$ whenever $Y$ depends on $X$. (This weaker ordering guarantee is inexpensive to preserve under compaction: dropped chunks can simply be excised from the chain while the relative order of surviving nodes remains intact.)\n- **P2 (Full Reasoning Integrity):** Block $X$ must be preceded by exactly block $X-1$; no intermediate block may be elided. (The stronger guarantee is costly under compaction, because removal of an internal node forces recomputation of every downstream hash.)\n- **P3 (Leak monitoring):** Providers should run a continuous verbatim-matching pass between any published or reported plaintext and any decoded reasoning that surfaces through support channels or abuse reports, so that leakage is detected and account flagged rather than merely prevented.\n- **P4 (Non-replayability):** The same reasoning block must never be accepted twice \u2013 neither within a session nor across sessions. Replay of an already-consumed envelope is rejected server-side.",
+      "cited_pages": [
+        "page_020.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer accurately identifies and describes all four design properties (P1 to P4) matching the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "a03",
+      "question": "Which open-weight models were used as scorers in the perplexity and probabilistic-extraction analysis, and through which providers?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_038.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_038.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_046.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_043.png",
+          "score": 0.0299
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "According to the Model Details under Section B.3.1, the open-weight models and their respective providers used as scorers are:\n- GLM-5.2 through Fireworks\n- GPT-OSS-120B through Fireworks\n- Kimi-K2.6 through Fireworks\n- Kimi-K2.7-Code through Fireworks\n- Inkling through Tinker (Thinking Machines)\n- Kimi-K3 through Parasail\n- DeepSeek-V4-Flash through Parasail\n\n(Note: Page 41 also lists seven scoring models in Figure 26: GLM 5.2, Kimi K3, Kimi K2.6, Kimi K2.7 Code, DeepSeek V4 Flash, Inkling, and gpt-oss 120B).",
+      "cited_pages": [
+        "page_038.png",
+        "page_041.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer lists all seven open-weight models and their corresponding providers exactly as stated in the reference answer.",
+      "author": "claude"
+    },
+    {
+      "id": "a04",
+      "question": "How much more reasoning does decoding the signature reveal compared with the summary the provider displays?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_058.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_058.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "Decoding the signature reveals approximately five times more reasoning than the provider exposes through the summary.",
+      "cited_pages": [
+        "page_058.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer accurately states that decoding the signature reveals approximately five times more reasoning.",
+      "author": "claude"
+    },
+    {
+      "id": "a05",
+      "question": "In the Alex Green persona table, which field never appeared in Opus 4.7's reasoning, and which fields never appeared in GPT-5.5's?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_063.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_063.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_040.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0305
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.0299
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "In the Alex Green persona table (Table 5), the field that never appeared in Opus 4.7's reasoning is \"Date of birth\" (marked with an $\\text{\\ding{55}}$), and the fields that never appeared in GPT-5.5's reasoning are \"Security-question answer\" and \"Password / session token\" (both marked with an $\\text{\\ding{55}}$).",
+      "cited_pages": [
+        "page_063.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies the date of birth for Opus 4.7, and the security-question answer and password / session token for GPT-5.5.",
+      "author": "claude"
+    },
+    {
+      "id": "a06",
+      "question": "In the best-of-k n-gram overlap table, what overlap did Kimi-K3 reach on STEM problems when prefilled with Opus 4.8 reasoning, versus the unprefilled control?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_023.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_023.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_030.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_047.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_028.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_048.png",
+          "score": 0.0305
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "According to Table 3 on page 23, when Kimi-K3 is prefilled with Opus 4.8 on STEM problems, it reached an overlap (Prefilled) of 0.305, compared to 0.160 for the unprefilled control.",
+      "cited_pages": [
+        "page_023.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system correctly identifies both the prefilled overlap (0.305) and the unprefilled control overlap (0.160).",
+      "author": "claude"
+    },
+    {
+      "id": "a07",
+      "question": "Which model was used as the fuzzy decoder for Gemini extraction, and which as the optional reconciler?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_056.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_056.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_057.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0312
+        },
+        {
+          "page": "page_054.png",
+          "score": 0.0304
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0302
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "Gemini Robotics ER-1.6 was used as a fuzzy decoder, and Gemini 3.5 Flash was used as an optional reconciler (Page 56).",
+      "cited_pages": [
+        "page_056.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system correctly identifies both Gemini Robotics ER-1.6 as the fuzzy decoder and Gemini 3.5 Flash as the optional reconciler.",
+      "author": "claude"
+    },
+    {
+      "id": "a08",
+      "question": "How many traces made up the dataset used to study summarization effects, and from which models?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_058.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_058.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_039.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_043.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "The dataset used to study summarization effects consists of a small dataset of \"18 Opus 4.8 traces and 15 GPT-5.6-Sol traces\" (from Opus 4.8 and GPT-5.6-Sol models).",
+      "cited_pages": [
+        "page_058.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies the exact number of traces (18 and 15) and the models from which they originated (Opus 4.8 and GPT-5.6-Sol).",
+      "author": "claude"
+    },
+    {
+      "id": "u01",
+      "question": "Which language models were the authors able to steal reasoning traces from?",
+      "scope": "ambiguous",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_004.png",
+        "page_002.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_001.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.0304
+        }
+      ],
+      "gold_rank": 4,
+      "hit@1": false,
+      "hit@3": false,
+      "hit@5": true,
+      "reciprocal_rank": 0.25,
+      "answer": "Based on the provided pages, the authors mention recovering reasoning traces for \"Anthropic, OpenAI, and Google\" (Page 1), as well as \"Claude Opus 4.8 or GPT-5.6-Sol\" (Page 2), and \"Opus 4.8 and GPT-5.6 Sol\" (Page 3). Additionally, Appendix C (listed on Page 1) mentions extraction attack details for Gemini, Claude, and GPT APIs.",
+      "cited_pages": [
+        "page_001.png"
+      ],
+      "cited_gold": false,
+      "grade": "partial",
+      "judge_reason": "The system answer only identifies two specific models (Claude Opus 4.8 and GPT-5.6-Sol) and provider names, missing the full list of models specified in the reference answer.",
+      "author": "developer"
+    },
+    {
+      "id": "u02",
+      "question": "What models did they use to score or judge the stolen reasoning traces?",
+      "scope": "ambiguous",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_038.png",
+        "page_041.png",
+        "page_062.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_001.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0317
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.0305
+        }
+      ],
+      "gold_rank": 3,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.3333333333333333,
+      "answer": "The models used to score or judge the reasoning traces (shown as the scoring models in Figure 26 and its associated text) are: GLM 5.2, Kimi K3, Kimi K2.6, Kimi K2.7 Code, DeepSeek V4 Flash, Inkling, and gpt-oss 120B.",
+      "cited_pages": [
+        "page_041.png"
+      ],
+      "cited_gold": true,
+      "grade": "partial",
+      "judge_reason": "The system correctly lists all seven specific scoring models but omits the two-stage LLM-as-a-judge used to label privacy artifacts.",
+      "author": "developer"
+    },
+    {
+      "id": "u03",
+      "question": "What were the extraction success rates for the models they attacked?",
+      "scope": "ambiguous",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png",
+        "page_002.png",
+        "page_054.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_005.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_054.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_006.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0304
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "The provided pages do not contain information about the extraction success rates for the models they attacked.",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "partial",
+      "judge_reason": "The system answer correctly notes that success rates are not provided, but fails to describe the token-ratio measure used instead.",
+      "author": "developer"
+    },
+    {
+      "id": "u04",
+      "question": "How many credentials and how many pieces of personal information leaked in their leak case study?",
+      "scope": "ambiguous",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_008.png",
+        "page_003.png",
+        "page_001.png",
+        "page_010.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0306
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "Based on the provided pages, there are 182 credentials and 367 Personally Identifiable Information (PII) artifacts (pieces of personal information) identified in the analysis (pages 8 and 10). Specifically, Section 5.3 states: \"...367 Personally Identifiable Information (PII) artifacts and 182 credentials (including API keys and passwords)...\" (page 10).",
+      "cited_pages": [
+        "page_008.png",
+        "page_010.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer correctly identifies both facts asked for: 182 credentials and 367 pieces of personal information (PII artifacts).",
+      "author": "developer"
+    },
+    {
+      "id": "u05",
+      "question": "Roughly how many queries does it take to reconstruct one reasoning span on their hardest benchmark?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_038.png",
+        "page_039.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_039.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_040.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.0312
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0305
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u06",
+      "question": "Does this attack work across different companies' APIs, or only within one provider?",
+      "scope": "main",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_001.png",
+        "page_002.png",
+        "page_004.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_003.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0303
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0302
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "The provided pages state that these encrypted blocks are \"fully compatible and interchangeable across different sessions, different users, and even different models within the same provider's ecosystem\" (page 2). However, regarding different companies' APIs, page 3 notes under Contributions that \"We evaluate and prove the effectiveness of the demonstrated attack against major API vendors including OpenAI, Google, and Anthropic.\"",
+      "cited_pages": [
+        "page_002.png",
+        "page_003.png"
+      ],
+      "cited_gold": true,
+      "grade": "partial",
+      "judge_reason": "The system answer notes that the attack works within the same provider's ecosystem, but fails to explicitly answer whether it works across different companies' APIs (i.e., that traces are not portable between companies).",
+      "author": "developer"
+    },
+    {
+      "id": "u07",
+      "question": "What is the reconciler and what job does it do in their pipeline?",
+      "scope": "appendix",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_052.png",
+        "page_056.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_053.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_056.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_063.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_020.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "The reconciler (shown as an optional reconciler, such as Gemini 3.5 Flash in the Gemini extraction pipeline) takes several noisy, independently-decoded transcriptions of the reasoning and is given the job to \"Reconstruct the single faithful transcription of the attached reasoning inside <reconciliation>...</reconciliation>: keep what the transcriptions got right, correct what they got wrong, and restore anything they missed. Preserve exact names, numbers, paths, and identifiers.\"",
+      "cited_pages": [
+        "page_056.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer accurately describes what the reconciler is and its role in reconstructing a single faithful transcription from noisy extractions.",
+      "author": "developer"
+    },
+    {
+      "id": "u08",
+      "question": "What defenses or mitigations do the authors recommend against this attack?",
+      "scope": "ambiguous",
+      "method": "hybrid-embedding",
+      "verified": true,
+      "gold_pages": [
+        "page_010.png",
+        "page_011.png",
+        "page_019.png",
+        "page_020.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_003.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_019.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0305
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    }
+  ]
+}

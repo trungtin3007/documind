@@ -1,0 +1,1359 @@
+{
+  "run_at": "2026-08-16T14:43:33",
+  "provisional": false,
+  "summary_over": [
+    "m01",
+    "m02",
+    "m03",
+    "m04",
+    "m05",
+    "m06",
+    "m07",
+    "m08",
+    "m09",
+    "m10",
+    "m11",
+    "m12",
+    "a01",
+    "a02",
+    "a03",
+    "a04",
+    "a05",
+    "a06",
+    "a07",
+    "a08",
+    "u01",
+    "u02",
+    "u03",
+    "u04",
+    "u05",
+    "u06",
+    "u07",
+    "u08"
+  ],
+  "config": {
+    "retrieval_k": 5,
+    "generation_k": 3,
+    "answer_model": "gemini-3.5-flash-lite",
+    "judge_model": "gemini-3.6-flash",
+    "embed_model": "voyage-multimodal-3",
+    "seed": 7,
+    "method": "hybrid"
+  },
+  "summary": {
+    "overall": {
+      "n": 28,
+      "hit@1": 0.75,
+      "hit@3": 0.9285714285714286,
+      "hit@5": 1.0,
+      "mrr": 0.849404761904762,
+      "cited_gold": 0.0,
+      "n_judged": 0,
+      "correct": null,
+      "partial": null,
+      "wrong": null,
+      "error": 0.0,
+      "ungraded": 1.0
+    },
+    "main": {
+      "n": 13,
+      "hit@1": 0.7692307692307693,
+      "hit@3": 0.9230769230769231,
+      "hit@5": 1.0,
+      "mrr": 0.8525641025641026,
+      "cited_gold": 0.0,
+      "n_judged": 0,
+      "correct": null,
+      "partial": null,
+      "wrong": null,
+      "error": 0.0,
+      "ungraded": 1.0
+    },
+    "appendix": {
+      "n": 10,
+      "hit@1": 0.8,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "mrr": 0.9,
+      "cited_gold": 0.0,
+      "n_judged": 0,
+      "correct": null,
+      "partial": null,
+      "wrong": null,
+      "error": 0.0,
+      "ungraded": 1.0
+    },
+    "ambiguous": {
+      "n": 5,
+      "hit@1": 0.6,
+      "hit@3": 0.8,
+      "hit@5": 1.0,
+      "mrr": 0.74,
+      "cited_gold": 0.0,
+      "n_judged": 0,
+      "correct": null,
+      "partial": null,
+      "wrong": null,
+      "error": 0.0,
+      "ungraded": 1.0
+    },
+    "by_author": {
+      "claude": {
+        "n": 20,
+        "hit@1": 0.85,
+        "hit@3": 0.95,
+        "hit@5": 1.0,
+        "mrr": 0.9125,
+        "cited_gold": 0.0,
+        "n_judged": 0,
+        "correct": null,
+        "partial": null,
+        "wrong": null,
+        "error": 0.0,
+        "ungraded": 1.0
+      },
+      "developer": {
+        "n": 8,
+        "hit@1": 0.5,
+        "hit@3": 0.875,
+        "hit@5": 1.0,
+        "mrr": 0.6916666666666667,
+        "cited_gold": 0.0,
+        "n_judged": 0,
+        "correct": null,
+        "partial": null,
+        "wrong": null,
+        "error": 0.0,
+        "ungraded": 1.0
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "m01",
+      "question": "What three operational functions does the encrypted reasoning envelope serve?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_004.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_004.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_020.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0306
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m02",
+      "question": "Which weakest model was used as the decoder for each provider in the extraction attack?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_005.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0304
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0302
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m03",
+      "question": "How many distinct PII artifacts and how many credentials were recovered from the scraped reasoning blocks?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_008.png",
+        "page_003.png",
+        "page_001.png",
+        "page_010.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0305
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0304
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m04",
+      "question": "How many reasoning blocks were scraped and decoded in the large-scale privacy analysis?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_003.png",
+        "page_001.png",
+        "page_008.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.031
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m05",
+      "question": "What four attack vectors does the vulnerability enable?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_003.png",
+        "page_001.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_007.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0303
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m06",
+      "question": "According to the cross-model compatibility table, which Claude model is the exception whose thinking traces cannot be replayed by other Claude models?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_004.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_004.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0317
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0305
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m07",
+      "question": "What fraction of the decoded thinking blocks contained at least one privacy leakage, and what fraction of sessions?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_008.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m08",
+      "question": "What capabilities does the threat model assume the attacker has?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_003.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_003.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0317
+        },
+        {
+          "page": "page_006.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0312
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m09",
+      "question": "Who was the vulnerability disclosed to, and what was the outcome of the disclosure?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_010.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_010.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_078.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.0306
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0305
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m10",
+      "question": "How did the authors measure whether the extracted reasoning was faithful?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_005.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_054.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.0305
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m11",
+      "question": "From genuine (non-benchmark) user sessions alone, what secrets were recovered and in what quantities?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_009.png",
+        "page_003.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 4,
+      "hit@1": false,
+      "hit@3": false,
+      "hit@5": true,
+      "reciprocal_rank": 0.25,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "m12",
+      "question": "What are the two thought-injection schemes, and which models accept past-turn injection?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_005.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_053.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.0305
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0304
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a01",
+      "question": "In the proposed context-bound envelope defense, what does the hash chain bind each reasoning block to?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_020.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_019.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_020.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0303
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0302
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a02",
+      "question": "What are the four design properties P1 to P4 of the chained envelope scheme?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_020.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_020.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_019.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.0317
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0303
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a03",
+      "question": "Which open-weight models were used as scorers in the perplexity and probabilistic-extraction analysis, and through which providers?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_038.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_038.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_043.png",
+          "score": 0.0301
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0297
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a04",
+      "question": "How much more reasoning does decoding the signature reveal compared with the summary the provider displays?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_058.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_058.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_011.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a05",
+      "question": "In the Alex Green persona table, which field never appeared in Opus 4.7's reasoning, and which fields never appeared in GPT-5.5's?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_063.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_063.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0317
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.0308
+        },
+        {
+          "page": "page_066.png",
+          "score": 0.0306
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a06",
+      "question": "In the best-of-k n-gram overlap table, what overlap did Kimi-K3 reach on STEM problems when prefilled with Opus 4.8 reasoning, versus the unprefilled control?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_023.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_023.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_024.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_025.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_048.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_030.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a07",
+      "question": "Which model was used as the fuzzy decoder for Gemini extraction, and which as the optional reconciler?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_056.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_056.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_052.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_054.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_057.png",
+          "score": 0.0302
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0302
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "a08",
+      "question": "How many traces made up the dataset used to study summarization effects, and from which models?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_058.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_058.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0304
+        },
+        {
+          "page": "page_012.png",
+          "score": 0.0304
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "claude"
+    },
+    {
+      "id": "u01",
+      "question": "Which language models were the authors able to steal reasoning traces from?",
+      "scope": "ambiguous",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_004.png",
+        "page_002.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_001.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_022.png",
+          "score": 0.032
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_038.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 5,
+      "hit@1": false,
+      "hit@3": false,
+      "hit@5": true,
+      "reciprocal_rank": 0.2,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u02",
+      "question": "What models did they use to score or judge the stolen reasoning traces?",
+      "scope": "ambiguous",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_038.png",
+        "page_041.png",
+        "page_062.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_038.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_041.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0304
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u03",
+      "question": "What were the extraction success rates for the models they attacked?",
+      "scope": "ambiguous",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_005.png",
+        "page_002.png",
+        "page_054.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_054.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_007.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_008.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0303
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u04",
+      "question": "How many credentials and how many pieces of personal information leaked in their leak case study?",
+      "scope": "ambiguous",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_008.png",
+        "page_003.png",
+        "page_001.png",
+        "page_010.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_008.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_062.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_065.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0308
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u05",
+      "question": "Roughly how many queries does it take to reconstruct one reasoning span on their hardest benchmark?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_038.png",
+        "page_039.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_038.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_039.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_040.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_050.png",
+          "score": 0.0301
+        },
+        {
+          "page": "page_086.png",
+          "score": 0.0299
+        }
+      ],
+      "gold_rank": 1,
+      "hit@1": true,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 1.0,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u06",
+      "question": "Does this attack work across different companies' APIs, or only within one provider?",
+      "scope": "main",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_001.png",
+        "page_002.png",
+        "page_004.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_003.png",
+          "score": 0.0325
+        },
+        {
+          "page": "page_005.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_001.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_002.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_004.png",
+          "score": 0.0309
+        }
+      ],
+      "gold_rank": 3,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.3333333333333333,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u07",
+      "question": "What is the reconciler and what job does it do in their pipeline?",
+      "scope": "appendix",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_052.png",
+        "page_056.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_053.png",
+          "score": 0.0328
+        },
+        {
+          "page": "page_056.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_063.png",
+          "score": 0.0313
+        },
+        {
+          "page": "page_064.png",
+          "score": 0.031
+        },
+        {
+          "page": "page_069.png",
+          "score": 0.0301
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    },
+    {
+      "id": "u08",
+      "question": "What defenses or mitigations do the authors recommend against this attack?",
+      "scope": "ambiguous",
+      "method": "hybrid",
+      "verified": true,
+      "gold_pages": [
+        "page_010.png",
+        "page_011.png",
+        "page_019.png",
+        "page_020.png"
+      ],
+      "retrieved_pages": [
+        {
+          "page": "page_001.png",
+          "score": 0.0323
+        },
+        {
+          "page": "page_010.png",
+          "score": 0.0318
+        },
+        {
+          "page": "page_019.png",
+          "score": 0.0315
+        },
+        {
+          "page": "page_003.png",
+          "score": 0.0311
+        },
+        {
+          "page": "page_009.png",
+          "score": 0.031
+        }
+      ],
+      "gold_rank": 2,
+      "hit@1": false,
+      "hit@3": true,
+      "hit@5": true,
+      "reciprocal_rank": 0.5,
+      "answer": "",
+      "cited_pages": [],
+      "cited_gold": false,
+      "grade": "ungraded",
+      "judge_reason": "Retrieval-only run (--no-generate).",
+      "author": "developer"
+    }
+  ]
+}

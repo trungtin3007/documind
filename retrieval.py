@@ -1,11 +1,22 @@
 """Page retrieval over the Voyage multimodal index.
 
-Importable core shared by search.py (CLI) and diagnose_retrieval.py.
+Two methods:
+  search()        visual only — cosine over page-image embeddings (unchanged).
+  search_hybrid() re-ranks the visual candidates by fusing them with a BM25
+                  ranking over the same pages' text layer.
+
+The hybrid exists because the visual index alone cannot break ties between
+pages that discuss the same topic in different sections: hit@5 was 100% while
+hit@1 was 68%, so the right page was retrieved but mis-ranked.
+
+Importable core shared by search.py (CLI), diagnose_retrieval.py and eval.py.
 """
 import os, json
 import numpy as np
 import voyageai
 from dotenv import load_dotenv
+
+import text_score
 
 load_dotenv()
 
@@ -14,6 +25,13 @@ INDEX_DIR = os.path.join(BASE_DIR, "index")
 PAGES_DIR = os.path.join(BASE_DIR, "pages")
 MODEL = "voyage-multimodal-3"
 TOP_K = 5
+POOL_K = 15       # visual candidates the re-ranker is allowed to reorder
+RRF_K = 60        # standard Reciprocal Rank Fusion constant; no weights to tune
+# "hybrid" is kept as an alias for the BM25 variant so result files written
+# before the embedding scorer existed still match on method.
+METHODS = ("visual", "hybrid-bm25", "hybrid-embedding")
+METHOD_ALIASES = {"hybrid": "hybrid-bm25"}
+DEFAULT_METHOD = "hybrid-embedding"   # adopted Week 4; visual/bm25 stay selectable
 
 _state = {}
 
@@ -51,3 +69,37 @@ def search(question, k=TOP_K):
     scores = emb_norm @ q                       # cosine similarity
     top = np.argsort(scores)[::-1][:k]
     return [(pages[i], float(scores[i])) for i in top]
+
+
+def search_hybrid(question, k=TOP_K, pool=POOL_K, text_scorer="bm25"):
+    """Re-rank the top `pool` visual candidates by fusing visual and text ranks.
+
+    Returns [(page, rrf_score)]. The score is a Reciprocal Rank Fusion value,
+    not a cosine — comparable within a result list, not against search().
+    """
+    visual = search(question, k=pool)
+    candidates = [page for page, _ in visual]
+
+    text_scores = text_score.get_scorer(text_scorer).score(question, ids=candidates)
+    text_ranked = sorted(candidates, key=lambda p: (-text_scores[p], p))
+
+    # RRF: each list contributes 1/(RRF_K + rank). A page ranked well by either
+    # signal survives; a page ranked well by both wins. No weights to tune.
+    fused = {}
+    for rank, page in enumerate(candidates, 1):
+        fused[page] = fused.get(page, 0.0) + 1.0 / (RRF_K + rank)
+    for rank, page in enumerate(text_ranked, 1):
+        fused[page] = fused.get(page, 0.0) + 1.0 / (RRF_K + rank)
+
+    ranked = sorted(fused.items(), key=lambda kv: (-kv[1], kv[0]))
+    return [(page, float(score)) for page, score in ranked[:k]]
+
+
+def search_by_method(question, k=TOP_K, method=DEFAULT_METHOD):
+    """Dispatch for the --method flag. Only the text scorer varies between hybrids."""
+    method = METHOD_ALIASES.get(method, method)
+    if method == "visual":
+        return search(question, k=k)
+    if method.startswith("hybrid-"):
+        return search_hybrid(question, k=k, text_scorer=method.split("-", 1)[1])
+    raise ValueError(f"Unknown method {method!r}; have {list(METHODS)}")

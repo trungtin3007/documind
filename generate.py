@@ -78,14 +78,15 @@ def _build_input(question, retrieved):
     return parts
 
 
-def answer(question, k=TOP_K, retrieved=None):
+def answer(question, k=TOP_K, retrieved=None, method=None):
     """Retrieve the k best pages, read them with the VLM, and answer from them.
 
     Pass `retrieved` (a list of (page, score)) to reuse pages already fetched
     by a caller, so eval does not pay for a second query embedding.
     """
     if retrieved is None:
-        retrieved = retrieval.search(question, k=k)
+        retrieved = retrieval.search_by_method(
+            question, k=k, method=method or retrieval.DEFAULT_METHOD)
 
     result = api_retry.call_with_retry(
         _get_client().interactions.create,

@@ -42,28 +42,43 @@ def is_judged(row):
     return bool(row and row.get("grade") in JUDGED_GRADES)
 
 
-def is_complete(row, do_judge):
-    return has_answer(row) and (is_judged(row) or not do_judge)
+def is_complete(row, do_judge, method):
+    """A stored row is reusable as-is only if it came from the same method."""
+    return (has_answer(row) and row.get("method", "visual") == method
+            and (is_judged(row) or not do_judge))
 
 
-def evaluate_one(entry, prior=None, do_judge=True):
+def top_pages(retrieved, n=None):
+    pages = [p for p, _ in retrieved] if retrieved and isinstance(retrieved[0], tuple) \
+        else [r["page"] for r in retrieved]
+    return pages[:n] if n else pages
+
+
+def evaluate_one(entry, prior=None, do_judge=True, method="visual", do_generate=True):
     """Run retrieval + generation + judging, reusing whatever `prior` already has.
 
-    Generation and judging are cached independently, so a row whose judge call
-    failed is re-judged without paying to generate the answer again.
+    Generation is reused only when the pages handed to the model are identical,
+    so switching retrieval method re-generates exactly the rows whose top-3
+    actually changed and no others. Judging is cached on top of that.
     """
     question = entry["question"]
+    retrieved = retrieval.search_by_method(question, k=RETRIEVAL_K, method=method)
+    sent = top_pages(retrieved, GENERATION_K)
 
-    if has_answer(prior):
-        retrieved = [(r["page"], r["score"]) for r in prior["retrieved_pages"]]
+    # Generation sees only the top 3, matching the shipped behaviour.
+    reuse_gen = has_answer(prior) and top_pages(prior["retrieved_pages"], GENERATION_K) == sent
+    if reuse_gen:
         result = {"answer": prior["answer"], "cited_pages": prior["cited_pages"]}
-    else:
-        retrieved = retrieval.search(question, k=RETRIEVAL_K)
-        # Generation sees only the top 3, matching the shipped behaviour.
+    elif do_generate:
         result = generate.answer(question, retrieved=retrieved[:GENERATION_K])
+    else:
+        # Retrieval-only run: measure ranking without paying to answer.
+        result = {"answer": "", "cited_pages": []}
 
-    if is_judged(prior):
+    if reuse_gen and is_judged(prior):
         verdict, reason = prior["grade"], prior.get("judge_reason", "")
+    elif not result["answer"]:
+        verdict, reason = "ungraded", "Retrieval-only run (--no-generate)."
     elif do_judge:
         verdict, reason = judge.grade(question, entry["gold_answer"], result["answer"])
     else:
@@ -74,6 +89,7 @@ def evaluate_one(entry, prior=None, do_judge=True):
         "id": entry["id"],
         "question": question,
         "scope": entry["scope"],
+        "method": method,
         "verified": entry.get("verified", False),
         "gold_pages": entry["gold_pages"],
         "retrieved_pages": [{"page": p, "score": round(s, 4)} for p, s in retrieved],
@@ -90,10 +106,11 @@ def evaluate_one(entry, prior=None, do_judge=True):
     }
 
 
-def _error_row(entry, exc):
+def _error_row(entry, exc, method="visual"):
     """Placeholder row for a question whose API calls failed outright."""
     return {
         "id": entry["id"], "question": entry["question"], "scope": entry["scope"],
+        "method": method,
         "verified": entry.get("verified", False), "gold_pages": entry["gold_pages"],
         "retrieved_pages": [], "gold_rank": None,
         "hit@1": False, "hit@3": False, "hit@5": False, "reciprocal_rank": 0.0,
@@ -200,14 +217,23 @@ def main():
     ap.add_argument("--limit", type=int, help="evaluate at most N entries (smoke test)")
     ap.add_argument("--only", help="comma-separated question ids to run, e.g. u04,u05,u06")
     ap.add_argument("--no-judge", action="store_true",
-                    help="retrieval metrics only; skips the judge call and halves API usage")
+                    help="skip the judge call; generation still runs (halves API usage)")
+    ap.add_argument("--no-generate", action="store_true",
+                    help="retrieval metrics only: no generation and no judging (zero LLM calls)")
     ap.add_argument("--out", default=RESULTS, help="where to write results JSON")
     ap.add_argument("--pause", type=float, default=PAUSE_SECONDS,
                     help="seconds between questions, to stay under the rate limit")
+    ap.add_argument("--method", choices=list(retrieval.METHODS) + list(retrieval.METHOD_ALIASES),
+                    default=retrieval.DEFAULT_METHOD,
+                    help="retrieval method: visual (baseline) or hybrid (BM25 re-rank)")
+    ap.add_argument("--cache-from", help="seed generation/judge cache from another results file")
+    ap.add_argument("--summarize-only", action="store_true",
+                    help="re-aggregate the summary from stored rows; runs nothing, no API calls")
     ap.add_argument("--resume", action="store_true",
                     help="reuse stored rows; generation and judging are cached separately")
     args = ap.parse_args()
-    do_judge = not args.no_judge
+    do_generate = not args.no_generate
+    do_judge = not (args.no_judge or args.no_generate)
 
     with open(EVAL_SET) as f:
         all_entries = json.load(f)
@@ -233,36 +259,52 @@ def main():
     # independently, so a row that generated but failed to grade only pays for
     # the judge call on the next run.
     prior = {}
+    if args.cache_from and os.path.exists(args.cache_from):
+        with open(args.cache_from) as f:
+            prior = {r["id"]: r for r in json.load(f).get("results", [])}
     if os.path.exists(args.out):
         with open(args.out) as f:
-            prior = {r["id"]: r for r in json.load(f).get("results", [])}
+            for row in json.load(f).get("results", []):
+                # Prefer whichever source actually carries a generation: a
+                # retrieval-only run leaves blank rows here that must not
+                # clobber reusable answers seeded from --cache-from.
+                if has_answer(row) or row["id"] not in prior:
+                    prior[row["id"]] = row
 
     rows, todo = [], []
-    for entry in entries:
-        stored = prior.get(entry["id"]) if args.resume else None
-        if is_complete(stored, do_judge):
-            rows.append(stored)
-        else:
-            todo.append((entry, stored))
+    if args.summarize_only:
+        # Re-aggregate what is already on disk. Used after a narrow --only run,
+        # whose summary would otherwise describe just that batch.
+        rows = [prior[e["id"]] for e in entries if e["id"] in prior]
+        print(f"Summarising {len(rows)} stored rows; nothing to run.")
+    else:
+        for entry in entries:
+            stored = prior.get(entry["id"]) if args.resume else None
+            if is_complete(stored, do_judge, args.method) and not args.no_generate:
+                rows.append(stored)
+            else:
+                todo.append((entry, stored))
 
     if args.resume:
         regen = sum(1 for _, s in todo if not has_answer(s))
         print(f"Resuming: {len(rows)} rows reused, {len(todo)} to run "
               f"({regen} need generation, {len(todo) - regen} need judging only)")
 
-    print(f"Evaluating {len(todo)} questions (retrieval k={RETRIEVAL_K}, "
-          f"generation k={GENERATION_K}, judge={judge.JUDGE_MODEL if do_judge else 'off'})")
+    print(f"Evaluating {len(todo)} questions (method={args.method}, retrieval k={RETRIEVAL_K}, "
+          f"generation={'on' if do_generate else 'OFF'}, "
+          f"judge={judge.JUDGE_MODEL if do_judge else 'off'})")
 
     for i, (entry, stored) in enumerate(todo, 1):
         if i > 1 and args.pause:
             time.sleep(args.pause)
         try:
-            row = evaluate_one(entry, prior=stored, do_judge=do_judge)
+            row = evaluate_one(entry, prior=stored, do_judge=do_judge,
+                               method=args.method, do_generate=do_generate)
         except Exception as exc:
             # Keep the run alive so one failure does not discard the whole batch;
             # the error stays visible as its own grade rather than counting as wrong.
             print(f"  [{i}/{len(todo)}] {entry['id']}  ERROR: {type(exc).__name__}")
-            row = _error_row(entry, exc)
+            row = _error_row(entry, exc, method=args.method)
         rows.append(row)
         if row["grade"] != "error":
             mark = "hit" if row["hit@3"] else "MISS"
@@ -298,6 +340,7 @@ def main():
             "judge_model": judge.JUDGE_MODEL,
             "embed_model": retrieval.MODEL,
             "seed": generate.SEED,
+            "method": args.method,
         },
         "summary": summary,
         "results": stored_rows,

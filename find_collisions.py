@@ -11,12 +11,15 @@ import re, argparse, collections
 
 import pymupdf
 
-# Boundaries checked against the PDF: main paper runs to the conclusion on p13,
-# p14-18 are acknowledgments / references / appendix TOC (skipped -- reference
-# lists name every model in the field and would produce fake collisions),
-# and the appendix proper starts at p19.
-MAIN_RANGE = (1, 13)
-APPENDIX_RANGE = (19, None)      # None = to the end
+import corpus
+
+# Boundaries checked against the PDF and shared via corpus.py so this file and
+# text_score.py cannot drift: main paper runs to the conclusion on p13, p14-18
+# are acknowledgments / references / appendix TOC (skipped -- reference lists
+# name every model in the field and would produce fake collisions), and the
+# appendix proper starts at p19.
+MAIN_RANGE = corpus.MAIN_RANGE
+APPENDIX_RANGE = corpus.APPENDIX_RANGE
 
 MIN_TERM_LEN = 4
 MAX_PAGE_SHARE = 0.35            # drop terms so common they are just the paper's vocabulary

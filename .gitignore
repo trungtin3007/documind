@@ -18,6 +18,11 @@ sample.pdf
 # generated: page images rendered from sample.pdf (pdf_to_images.py)
 pages/
 
+# generated: full text layer of sample.pdf (extract_text.py). Excluded for the
+# same reason as sample.pdf itself — it is the whole third-party paper, just in
+# another format — and it is regenerable from the PDF.
+pages_text.json
+
 # generated: embeddings + page manifest (build_index.py)
 index/
 
