@@ -1,0 +1,30 @@
+# secrets
+.env
+
+# virtualenvs
+venv/
+venv_py39_old/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# source document: third-party copyrighted paper, not redistributed here.
+# See README for the arXiv source and how to regenerate pages/ and index/.
+sample.pdf
+
+# generated: page images rendered from sample.pdf (pdf_to_images.py)
+pages/
+
+# generated: embeddings + page manifest (build_index.py)
+index/
+
+# generated: diagnostic and verification image bundles
+results/
+verify/
+
+# scratch
+*.log
+.DS_Store
