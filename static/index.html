@@ -66,23 +66,34 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   [hidden] { display: none !important; }
+  .docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .docs li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .doc-title { font-weight: 650; }
+  .doc-meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .doc-what { margin: 8px 0 0; font-size: 15px; }
+  .doc-src { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--accent); text-decoration: none; }
+  .doc-src:hover { text-decoration: underline; }
+  #docsSection { margin-top: 34px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>DocuMind</h1>
-    <div class="sub">Ask a question about the indexed paper. Answers cite the page they came from.</div>
+    <div class="sub">Ask across <span id="corpusStats">a corpus of U.S. federal reports</span> —
+      answers cite the document and page they came from.</div>
   </header>
 
   <div class="ask">
-    <input id="q" type="text" placeholder="e.g. How many PII items and credentials were recovered?" autocomplete="off" autofocus>
+    <input id="q" type="text" placeholder="e.g. What was the U.S. production and price of gallium in 2024?" autocomplete="off" autofocus>
     <button id="go">Ask</button>
   </div>
   <div class="hint">
     Try:
-    <code class="sample">How many PII items and how many credentials were recovered?</code>
-    <code class="sample">What is the cross-model compatibility of encrypted reasoning?</code>
+    <code class="sample">How much do households spend on food away from home each year?</code>
+    <code class="sample">What was the U.S. production and price of gallium in 2024?</code>
+    <code class="sample">What was median household income in 2023 and how did it change?</code>
+    <code class="sample">What does the report show about the unemployment rate?</code>
   </div>
 
   <section id="loading" hidden>
@@ -109,11 +120,57 @@
       <div class="strip" id="strip"></div>
     </section>
   </section>
+
+  <section id="docsSection">
+    <div class="label">Documents in this demo</div>
+    <ul class="docs">
+      <li>
+        <div class="doc-title">U.S. Geological Survey — Mineral Commodity Summaries 2025</div>
+        <div class="doc-meta">38 of 216 pages included</div>
+        <p class="doc-what">Two-page statistical profile for each mineral: U.S. production, imports,
+          prices, reserves and import reliance. Ask for a specific commodity's numbers.</p>
+        <a class="doc-src" href="https://pubs.usgs.gov/periodicals/mcs2025/mcs2025.pdf"
+           target="_blank" rel="noopener">Original PDF — pubs.usgs.gov</a>
+      </li>
+      <li>
+        <div class="doc-title">Federal Reserve — Monetary Policy Report, June 2025</div>
+        <div class="doc-meta">81 pages</div>
+        <p class="doc-what">Charts and commentary on inflation, the labor market and interest rates.
+          Ask what the Fed observed about an economic trend.</p>
+        <a class="doc-src" href="https://www.federalreserve.gov/monetarypolicy/files/20250620_mprfullreport.pdf"
+           target="_blank" rel="noopener">Original PDF — federalreserve.gov</a>
+      </li>
+      <li>
+        <div class="doc-title">U.S. Census Bureau — Income in the United States: 2023</div>
+        <div class="doc-meta">59 pages</div>
+        <p class="doc-what">Household and family income tables with year-over-year change, plus
+          earnings and poverty by demographic group. Ask for an income figure or how it moved.</p>
+        <a class="doc-src" href="https://www2.census.gov/library/publications/2024/demo/p60-282.pdf"
+           target="_blank" rel="noopener">Original PDF — census.gov</a>
+      </li>
+      <li>
+        <div class="doc-title">Bureau of Labor Statistics — Consumer Expenditures, 2023</div>
+        <div class="doc-meta">16 pages</div>
+        <p class="doc-what">Average annual household spending by category — food, housing,
+          transportation — with multi-year comparison tables. Ask what households spend on something.</p>
+      </li>
+    </ul>
+    <p class="hint">All four are U.S. federal publications, in the public domain under
+      <a href="https://www.law.cornell.edu/uscode/text/17/105" target="_blank" rel="noopener">17 U.S.C. §105</a>.
+      The full local corpus runs to 611 pages across 8 documents.</p>
+  </section>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 const q = $('q'), go = $('go');
+
+// Fill the tagline from the running service rather than hardcoding counts.
+fetch('/health').then(r => r.json()).then(d => {
+  if (!d || !d.pages) return;
+  const docs = d.documents === 1 ? 'U.S. federal report' : 'U.S. federal reports';
+  $('corpusStats').textContent = `${d.pages} pages from ${d.documents} ${docs}`;
+}).catch(() => {});
 
 document.querySelectorAll('.sample').forEach(el =>
   el.addEventListener('click', () => { q.value = el.textContent; ask(); }));
