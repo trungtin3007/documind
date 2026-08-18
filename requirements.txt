@@ -1,0 +1,24 @@
+# Runtime dependencies for serving the web app (app.py).
+# Pinned to the versions this project was developed and evaluated against.
+#
+# Deliberately NOT here:
+#   sentence-transformers  only needed for DOCUMIND_METHOD=hybrid-embedding.
+#                          text_score.py imports it lazily, so the bm25 path
+#                          runs without it. See requirements-dev.txt.
+#   pymupdf, pillow        only needed to build a corpus (pdf_to_images.py,
+#                          build_index.py, extract_text.py), never to serve.
+#   rank-bm25              not used; BM25 is implemented directly in
+#                          text_score.py with no dependency.
+#   torch                  not needed. voyageai imports torch opportunistically
+#                          when it happens to be installed, but does not require
+#                          it. Verified in a clean venv built from this file:
+#                          torch and sentence_transformers are never imported,
+#                          and the served app peaks at ~116MB RSS.
+
+fastapi==0.141.1
+uvicorn==0.52.3
+pydantic==2.13.4
+python-dotenv==1.2.2
+numpy==2.5.2
+voyageai==0.5.0
+google-genai==2.18.1

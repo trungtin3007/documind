@@ -34,7 +34,12 @@ RRF_K = 60        # standard Reciprocal Rank Fusion constant; no weights to tune
 # before the embedding scorer existed still match on method.
 METHODS = ("visual", "hybrid-bm25", "hybrid-embedding")
 METHOD_ALIASES = {"hybrid": "hybrid-bm25"}
-DEFAULT_METHOD = "hybrid-embedding"   # adopted Week 4; visual/bm25 stay selectable
+# Adopted Week 4. DOCUMIND_METHOD overrides it per-process: the Render free tier
+# cannot hold sentence-transformers on top of what voyageai already loads, so
+# the deploy runs hybrid-bm25 (26/28 hit@3 vs 27/28 — one question, within noise).
+DEFAULT_METHOD = os.environ.get("DOCUMIND_METHOD", "hybrid-embedding")
+if DEFAULT_METHOD not in METHODS and DEFAULT_METHOD not in METHOD_ALIASES:
+    raise SystemExit(f"DOCUMIND_METHOD={DEFAULT_METHOD!r} is not a known method; have {list(METHODS)}")
 
 _state = {}
 

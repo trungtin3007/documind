@@ -1,0 +1,46 @@
+# Render blueprint for the DocuMind demo.
+#
+# Serves the committed 194-page demo corpus (pages_demo/ + index_demo/), which
+# is in the repo, so no corpus build happens at deploy time.
+#
+# Retrieval runs hybrid-bm25 rather than the adopted hybrid-embedding default.
+# hybrid-embedding needs sentence-transformers, which pulls torch: ~500MB more
+# to install and ~400MB more RSS, against a 512MB instance. With bm25 the served
+# app peaks at ~116MB (measured in a clean venv built from requirements.txt) and
+# there is no model download, so no cold-start penalty. BM25 scores 26/28 hit@3
+# against embedding's 27/28 — one question, inside the noise RESULTS.md reports.
+# To switch: install requirements-dev.txt, raise the plan, and set
+# DOCUMIND_METHOD=hybrid-embedding.
+#
+# Secrets (VOYAGE_API_KEY, GEMINI_API_KEY) are marked sync:false and must be
+# set in the Render dashboard. They are never stored in this file.
+
+services:
+  - type: web
+    name: documind
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    # Render supplies $PORT; binding 0.0.0.0 is required for the health check.
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /health
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.5"
+      - key: DOCUMIND_DATA
+        value: demo
+      - key: DOCUMIND_METHOD
+        value: hybrid-bm25
+      - key: DOCUMIND_ANSWER_MODEL
+        value: gemini-3.6-flash
+      # Keep pip from caching wheels into the image; the build disk is small.
+      - key: PIP_NO_CACHE_DIR
+        value: "1"
+      - key: VOYAGE_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
