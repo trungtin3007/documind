@@ -15,11 +15,9 @@ from collections import Counter
 import numpy as np
 
 import corpus
+import corpora
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PAGES_TEXT = os.path.join(BASE_DIR, "pages_text.json")
-CACHE_DIR = os.path.join(BASE_DIR, "index")
-EMB_CACHE = os.path.join(CACHE_DIR, "text_embeddings.npz")
 
 EMB_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 # The model truncates at 256 tokens but pages run ~900, so a whole-page vector
@@ -77,22 +75,31 @@ class BM25:
 _cache = {}
 
 
-def load_pages_text(path=PAGES_TEXT):
+def load_pages_text(path=None):
+    path = path or corpora.text_path()
     if path not in _cache:
         if not os.path.exists(path):
-            raise SystemExit(f"{os.path.relpath(path)} not found — run extract_text.py first.")
+            raise SystemExit(f"{os.path.relpath(path)} not found — run "
+                             f"extract_text.py --corpus {corpora.active()} first.")
         with open(path) as f:
             _cache[path] = json.load(f)
     return _cache[path]
 
 
-def content_pages_text(path=PAGES_TEXT):
-    """Page text with front/back matter dropped (see corpus.NON_CONTENT_RANGE).
+def content_pages_text(path=None):
+    """Page text with front/back matter dropped.
+
+    corpus.NON_CONTENT_RANGE (pages 14-18: references, acknowledgments, TOC) is
+    a fact about sample.pdf specifically, so it is applied only to the single
+    corpus. Other documents have their own structure and are used whole.
 
     Excluded pages simply have no entry, so BM25.score returns 0.0 for them —
     they keep whatever support the visual ranking gives and gain none here.
     """
-    return {page: text for page, text in load_pages_text(path).items()
+    texts = load_pages_text(path)
+    if corpora.config()["nested"]:
+        return dict(texts)
+    return {page: text for page, text in texts.items()
             if not corpus.is_non_content(corpus.page_number(page))}
 
 
@@ -109,7 +116,8 @@ def chunks_of(text, size=CHUNK_WORDS, overlap=CHUNK_OVERLAP):
 class EmbeddingScorer:
     """Semantic similarity: page score = max cosine over that page's chunks."""
 
-    def __init__(self, docs, model_name=EMB_MODEL, cache_path=EMB_CACHE):
+    def __init__(self, docs, model_name=EMB_MODEL, cache_path=None):
+        cache_path = cache_path or corpora.text_cache_path()
         self.model_name = model_name
         self.ids, self.chunk_page, texts = [], [], []
         for page in sorted(docs):
@@ -168,15 +176,18 @@ class EmbeddingScorer:
 
 
 def _bm25_scorer():
-    if "bm25" not in _cache:
-        _cache["bm25"] = BM25(content_pages_text())
-    return _cache["bm25"]
+    key = ("bm25", corpora.active())
+    if key not in _cache:
+        _cache[key] = BM25(content_pages_text())
+    return _cache[key]
 
 
 def _embedding_scorer():
-    if "embedding" not in _cache:
-        _cache["embedding"] = EmbeddingScorer(content_pages_text())
-    return _cache["embedding"]
+    key = ("embedding", corpora.active())
+    if key not in _cache:
+        _cache[key] = EmbeddingScorer(content_pages_text(),
+                                      cache_path=corpora.text_cache_path())
+    return _cache[key]
 
 
 SCORERS = {"bm25": _bm25_scorer, "embedding": _embedding_scorer}

@@ -1,6 +1,6 @@
 # DocuMind — Evaluation Results
 
-*Generated 2026-08-16 by `make_results.py` from `eval_results.json` (run 2026-08-16T16:13:11). Every number here is read from that file.*
+*Generated 2026-08-17 by `make_results.py` from `eval_results.json` (run 2026-08-17T16:51:26). Every number here is read from that file.*
 
 ## What DocuMind is
 

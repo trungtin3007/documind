@@ -13,9 +13,10 @@ import os, re, json, glob, argparse
 
 import pymupdf
 
+import corpora
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PAGES_DIR = os.path.join(BASE_DIR, "pages")
-OUT = os.path.join(BASE_DIR, "pages_text.json")
+SOURCES_DIR = os.path.join(BASE_DIR, "sources")
 
 THIN_CHARS = 200          # below this, the page carries little usable text
 GARBLED_ALPHA_RATIO = 0.55   # printable text should be mostly letters/spaces
@@ -39,23 +40,49 @@ def quality(text):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default=os.path.join(BASE_DIR, "sample.pdf"))
+    ap.add_argument("--corpus", choices=sorted(corpora.CORPORA), default=corpora.DEFAULT)
     ap.add_argument("--show", type=int, default=2, help="sample extractions to print")
     args = ap.parse_args()
 
-    page_files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PAGES_DIR, "*.png")))
-    doc = pymupdf.open(args.pdf)
-    if len(page_files) != doc.page_count:
-        raise SystemExit(f"Mismatch: {len(page_files)} page images vs {doc.page_count} PDF pages. "
-                         "The text layer would be misaligned with the visual index.")
+    corpus = corpora.use(args.corpus)
+    pages_root = corpora.pages_dir()
+    out_path = corpora.text_path()
 
-    texts, stats = {}, {}
-    for i, name in enumerate(page_files):
-        text = doc[i].get_text()
-        texts[name] = text
-        stats[name] = quality(text)
+    texts = {}
+    if not corpora.config()["nested"]:
+        page_files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(pages_root, "*.png")))
+        doc = pymupdf.open(args.pdf)
+        if len(page_files) != doc.page_count:
+            raise SystemExit(f"Mismatch: {len(page_files)} page images vs {doc.page_count} PDF pages. "
+                             "The text layer would be misaligned with the visual index.")
+        for i, name in enumerate(page_files):
+            texts[name] = doc[i].get_text()
+        doc.close()
+    else:
+        # One PDF per document id; page ids are "<docid>/page_NNN.png".
+        manifest = corpora.load_manifest()
+        if not manifest:
+            raise SystemExit(f"No manifest at {corpora.manifest_path()}. Run pdf_to_images.py first.")
+        for did, meta in sorted(manifest.items()):
+            src = os.path.join(SOURCES_DIR, meta["source"])
+            if not os.path.exists(src):
+                raise SystemExit(f"Missing source PDF for {did}: {src}")
+            doc = pymupdf.open(src)
+            rendered = sorted(glob.glob(os.path.join(pages_root, did, "*.png")))
+            if len(rendered) != doc.page_count:
+                raise SystemExit(f"{did}: {len(rendered)} images vs {doc.page_count} PDF pages — "
+                                 "text would be misaligned with the index.")
+            for i in range(doc.page_count):
+                texts[f"{did}/page_{i + 1:03d}.png"] = doc[i].get_text()
+            doc.close()
 
-    with open(OUT, "w") as f:
+    page_files = sorted(texts)
+    stats = {name: quality(texts[name]) for name in page_files}
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w") as f:
         json.dump(texts, f)
+    OUT = out_path
 
     total = len(page_files)
     empty = [n for n, s in stats.items() if s["chars"] == 0]
@@ -75,7 +102,7 @@ def main():
         print("\n  NOTE: pages above have a weak text layer. Not OCRing anything — "
               "say the word if you want OCR for these.")
 
-    for name in page_files[:args.show] + ([page_files[7]] if total > 7 else []):
+    for name in page_files[:args.show]:
         s = stats[name]
         snippet = " ".join(texts[name].split())[:300]
         print(f"\n--- {name}  ({s['chars']} chars, alpha {s['alpha_ratio']:.2f}, "

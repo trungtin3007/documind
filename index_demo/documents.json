@@ -1,0 +1,26 @@
+{
+  "bls-ce-2023": {
+    "title": "bls-ce-2023.pdf",
+    "source": "bls-ce-2023.pdf",
+    "pages": 16,
+    "full_pages": 16
+  },
+  "census-income-2023": {
+    "title": "census-income-2023.pdf",
+    "source": "census-income-2023.pdf",
+    "pages": 59,
+    "full_pages": 59
+  },
+  "fed-mpr-2025": {
+    "title": "fed-mpr-2025.pdf",
+    "source": "fed-mpr-2025.pdf",
+    "pages": 81,
+    "full_pages": 81
+  },
+  "usgs-mcs-2025": {
+    "title": "usgs-mcs-2025.pdf",
+    "source": "usgs-mcs-2025.pdf",
+    "pages": 38,
+    "full_pages": 216
+  }
+}

@@ -264,6 +264,17 @@ def main():
             prior = {r["id"]: r for r in json.load(f).get("results", [])}
     if os.path.exists(args.out):
         with open(args.out) as f:
+            out_rows = json.load(f).get("results", [])
+        # One results file holds one retrieval method. Writing a second method
+        # into it silently corrupts the other method's rows, which is exactly
+        # how the visual baseline once got embedding rows merged into it.
+        clashing = sorted({r.get("method", "visual") for r in out_rows
+                           if r.get("method", "visual") != args.method})
+        if clashing and not args.summarize_only:
+            sys.exit(f"{os.path.basename(args.out)} already holds rows from "
+                     f"{', '.join(clashing)}, but this run uses {args.method}. "
+                     f"Write to a different --out file.")
+        with open(args.out) as f:
             for row in json.load(f).get("results", []):
                 # Prefer whichever source actually carries a generation: a
                 # retrieval-only run leaves blank rows here that must not

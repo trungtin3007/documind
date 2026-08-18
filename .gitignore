@@ -15,6 +15,14 @@ __pycache__/
 # See README for the arXiv source and how to regenerate pages/ and index/.
 sample.pdf
 
+# Demo corpus. The TRIMMED corpus (pages_demo/, index_demo/ — 194 pages, ~57MB)
+# IS committed: it is US federal public-domain material and it is what the
+# deployed demo serves. The full 611-page corpus and the source PDFs are not —
+# too large for git, and regenerable (see README).
+sources/
+pages_demo_full/
+index_demo_full/
+
 # generated: page images rendered from sample.pdf (pdf_to_images.py)
 pages/
 

@@ -17,12 +17,15 @@ import voyageai
 from dotenv import load_dotenv
 
 import text_score
+import corpora
 
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-INDEX_DIR = os.path.join(BASE_DIR, "index")
-PAGES_DIR = os.path.join(BASE_DIR, "pages")
+# Paths come from the active corpus (corpora.py). The defaults are the original
+# single-paper layout, so eval and RESULTS.md are unaffected.
+INDEX_DIR = corpora.index_dir()
+PAGES_DIR = corpora.pages_dir()
 MODEL = "voyage-multimodal-3"
 TOP_K = 5
 POOL_K = 15       # visual candidates the re-ranker is allowed to reorder
@@ -37,10 +40,13 @@ _state = {}
 
 
 def _load():
-    """Load client + normalized index once, on first use."""
-    if not _state:
-        embeddings = np.load(os.path.join(INDEX_DIR, "embeddings.npy"))
-        with open(os.path.join(INDEX_DIR, "pages.json")) as f:
+    """Load client + normalized index once, per active corpus."""
+    if _state.get("corpus") != corpora.active():
+        _state.clear()
+        _state["corpus"] = corpora.active()
+        index_dir = corpora.index_dir()
+        embeddings = np.load(os.path.join(index_dir, "embeddings.npy"))
+        with open(os.path.join(index_dir, "pages.json")) as f:
             _state["pages"] = json.load(f)
         _state["emb_norm"] = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
         _state["vo"] = voyageai.Client()
@@ -54,8 +60,8 @@ def page_count():
 
 
 def page_path(page):
-    """Full path to a page image given its filename from a search result."""
-    return os.path.join(PAGES_DIR, page)
+    """Full path to a page image given its page id from a search result."""
+    return corpora.page_path(page)
 
 
 def search(question, k=TOP_K):
