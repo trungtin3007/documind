@@ -29,7 +29,12 @@ pages/
 # generated: full text layer of sample.pdf (extract_text.py). Excluded for the
 # same reason as sample.pdf itself — it is the whole third-party paper, just in
 # another format — and it is regenerable from the PDF.
-pages_text.json
+#
+# The leading slash anchors this to the repo root and matters: without it, git
+# matches the name at ANY depth and also swallowed index_demo/pages_text.json,
+# which the deployed app needs for BM25 scoring. The full corpus's copy stays
+# ignored via the index_demo_full/ directory rule above.
+/pages_text.json
 
 # generated: embeddings + page manifest (build_index.py)
 index/

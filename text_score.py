@@ -79,7 +79,9 @@ def load_pages_text(path=None):
     path = path or corpora.text_path()
     if path not in _cache:
         if not os.path.exists(path):
-            raise SystemExit(f"{os.path.relpath(path)} not found — run "
+            # Report the absolute path: relpath() made a missing *file* look like
+            # a relative-path/CWD bug and sent us chasing the wrong cause once.
+            raise SystemExit(f"Page text not found at {path} (cwd={os.getcwd()}) — run "
                              f"extract_text.py --corpus {corpora.active()} first.")
         with open(path) as f:
             _cache[path] = json.load(f)
