@@ -5,8 +5,6 @@
 #   sentence-transformers  only needed for DOCUMIND_METHOD=hybrid-embedding.
 #                          text_score.py imports it lazily, so the bm25 path
 #                          runs without it. See requirements-dev.txt.
-#   pymupdf, pillow        only needed to build a corpus (pdf_to_images.py,
-#                          build_index.py, extract_text.py), never to serve.
 #   rank-bm25              not used; BM25 is implemented directly in
 #                          text_score.py with no dependency.
 #   torch                  not needed. voyageai imports torch opportunistically
@@ -22,3 +20,9 @@ python-dotenv==1.2.2
 numpy==2.5.2
 voyageai==0.5.0
 google-genai==2.18.1
+# Needed at SERVE time, not just for corpus building: the /upload endpoint
+# validates and renders user PDFs (pymupdf) and embeds page images (pillow).
+pymupdf==1.28.2
+pillow==12.3.0
+boto3==1.43.76                # S3-compatible client for Cloudflare R2 upload storage
+python-multipart==0.0.32   # required by FastAPI for PDF upload (multipart/form-data)

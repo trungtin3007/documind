@@ -41,37 +41,56 @@ DEFAULT_METHOD = os.environ.get("DOCUMIND_METHOD", "hybrid-embedding")
 if DEFAULT_METHOD not in METHODS and DEFAULT_METHOD not in METHOD_ALIASES:
     raise SystemExit(f"DOCUMIND_METHOD={DEFAULT_METHOD!r} is not a known method; have {list(METHODS)}")
 
-_state = {}
+_state = {}     # corpus name -> {pages, emb_norm}
+_clients = {}
 
 
-def _load():
-    """Load client + normalized index once, per active corpus."""
-    if _state.get("corpus") != corpora.active():
-        _state.clear()
-        _state["corpus"] = corpora.active()
-        index_dir = corpora.index_dir()
+def _load(corpus=None):
+    """Load client + normalized index for a corpus, cached per corpus name.
+
+    `corpus` is explicit so a web request can select one without mutating the
+    process-wide active corpus, which would race other in-flight requests.
+    """
+    corpus = corpus or corpora.active()
+    entry = _state.get(corpus)
+    if entry is None:
+        index_dir = corpora.index_dir(corpus)
         embeddings = np.load(os.path.join(index_dir, "embeddings.npy"))
         with open(os.path.join(index_dir, "pages.json")) as f:
-            _state["pages"] = json.load(f)
-        _state["emb_norm"] = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
-        _state["vo"] = voyageai.Client()
-    return _state["vo"], _state["emb_norm"], _state["pages"]
+            pages = json.load(f)
+        entry = {
+            "pages": pages,
+            "emb_norm": embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True),
+        }
+        _state[corpus] = entry
+    return _client(), entry["emb_norm"], entry["pages"]
 
 
-def page_count():
+def _client():
+    if "voyage_client" not in _clients:
+        _clients["voyage_client"] = voyageai.Client()
+    return _clients["voyage_client"]
+
+
+def forget(corpus):
+    """Drop a cached index (used when a temporary upload corpus is removed)."""
+    _state.pop(corpus, None)
+
+
+def page_count(corpus=None):
     """Number of pages in the index."""
-    _, _, pages = _load()
+    _, _, pages = _load(corpus)
     return len(pages)
 
 
-def page_path(page):
+def page_path(page, corpus=None):
     """Full path to a page image given its page id from a search result."""
-    return corpora.page_path(page)
+    return corpora.page_path(page, corpus)
 
 
-def search(question, k=TOP_K):
+def search(question, k=TOP_K, corpus=None):
     """Return the k best-matching pages as [(page_filename, cosine_score), ...]."""
-    vo, emb_norm, pages = _load()
+    vo, emb_norm, pages = _load(corpus)
     q = vo.multimodal_embed(
         inputs=[[question]], model=MODEL, input_type="query"
     ).embeddings[0]
@@ -82,16 +101,16 @@ def search(question, k=TOP_K):
     return [(pages[i], float(scores[i])) for i in top]
 
 
-def search_hybrid(question, k=TOP_K, pool=POOL_K, text_scorer="bm25"):
+def search_hybrid(question, k=TOP_K, pool=POOL_K, text_scorer="bm25", corpus=None):
     """Re-rank the top `pool` visual candidates by fusing visual and text ranks.
 
     Returns [(page, rrf_score)]. The score is a Reciprocal Rank Fusion value,
     not a cosine — comparable within a result list, not against search().
     """
-    visual = search(question, k=pool)
+    visual = search(question, k=pool, corpus=corpus)
     candidates = [page for page, _ in visual]
 
-    text_scores = text_score.get_scorer(text_scorer).score(question, ids=candidates)
+    text_scores = text_score.get_scorer(text_scorer, corpus=corpus).score(question, ids=candidates)
     text_ranked = sorted(candidates, key=lambda p: (-text_scores[p], p))
 
     # RRF: each list contributes 1/(RRF_K + rank). A page ranked well by either
@@ -106,11 +125,11 @@ def search_hybrid(question, k=TOP_K, pool=POOL_K, text_scorer="bm25"):
     return [(page, float(score)) for page, score in ranked[:k]]
 
 
-def search_by_method(question, k=TOP_K, method=DEFAULT_METHOD):
+def search_by_method(question, k=TOP_K, method=DEFAULT_METHOD, corpus=None):
     """Dispatch for the --method flag. Only the text scorer varies between hybrids."""
     method = METHOD_ALIASES.get(method, method)
     if method == "visual":
-        return search(question, k=k)
+        return search(question, k=k, corpus=corpus)
     if method.startswith("hybrid-"):
-        return search_hybrid(question, k=k, text_scorer=method.split("-", 1)[1])
+        return search_hybrid(question, k=k, text_scorer=method.split("-", 1)[1], corpus=corpus)
     raise ValueError(f"Unknown method {method!r}; have {list(METHODS)}")

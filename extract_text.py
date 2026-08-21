@@ -37,6 +37,15 @@ def quality(text):
     }
 
 
+def page_texts(pdf_path):
+    """Text layer for every page of one PDF, in page order."""
+    doc = pymupdf.open(pdf_path)
+    try:
+        return [doc[i].get_text() for i in range(doc.page_count)]
+    finally:
+        doc.close()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default=os.path.join(BASE_DIR, "sample.pdf"))

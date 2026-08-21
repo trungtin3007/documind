@@ -5,7 +5,7 @@ Two scorers behind get_scorer(name):
   "embedding"  semantic similarity from a small local sentence-transformer.
                Downloads the model once (~90MB), then runs on CPU.
 
-Both exclude corpus.NON_CONTENT_RANGE (references etc.) from the corpus.
+The single corpus excludes page_layout.NON_CONTENT_RANGE (references etc.).
 
 Run:  ./venv/bin/python text_score.py "your question" [--scorer bm25|embedding]
 """
@@ -14,7 +14,7 @@ from collections import Counter
 
 import numpy as np
 
-import corpus
+import corpus as page_layout   # document-structure facts about sample.pdf
 import corpora
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -75,8 +75,8 @@ class BM25:
 _cache = {}
 
 
-def load_pages_text(path=None):
-    path = path or corpora.text_path()
+def load_pages_text(path=None, corpus=None):
+    path = path or corpora.text_path(corpus)
     if path not in _cache:
         if not os.path.exists(path):
             # Report the absolute path: relpath() made a missing *file* look like
@@ -88,21 +88,21 @@ def load_pages_text(path=None):
     return _cache[path]
 
 
-def content_pages_text(path=None):
+def content_pages_text(path=None, corpus=None):
     """Page text with front/back matter dropped.
 
-    corpus.NON_CONTENT_RANGE (pages 14-18: references, acknowledgments, TOC) is
+    page_layout.NON_CONTENT_RANGE (pages 14-18: references, acknowledgments, TOC) is
     a fact about sample.pdf specifically, so it is applied only to the single
     corpus. Other documents have their own structure and are used whole.
 
     Excluded pages simply have no entry, so BM25.score returns 0.0 for them —
     they keep whatever support the visual ranking gives and gain none here.
     """
-    texts = load_pages_text(path)
-    if corpora.config()["nested"]:
+    texts = load_pages_text(path, corpus)
+    if corpora.config(corpus)["nested"]:
         return dict(texts)
     return {page: text for page, text in texts.items()
-            if not corpus.is_non_content(corpus.page_number(page))}
+            if not page_layout.is_non_content(page_layout.page_number(page))}
 
 
 def chunks_of(text, size=CHUNK_WORDS, overlap=CHUNK_OVERLAP):
@@ -177,29 +177,35 @@ class EmbeddingScorer:
         return best
 
 
-def _bm25_scorer():
-    key = ("bm25", corpora.active())
+def _bm25_scorer(corpus=None):
+    key = ("bm25", corpus or corpora.active())
     if key not in _cache:
-        _cache[key] = BM25(content_pages_text())
+        _cache[key] = BM25(content_pages_text(corpus=corpus))
     return _cache[key]
 
 
-def _embedding_scorer():
-    key = ("embedding", corpora.active())
+def _embedding_scorer(corpus=None):
+    key = ("embedding", corpus or corpora.active())
     if key not in _cache:
-        _cache[key] = EmbeddingScorer(content_pages_text(),
-                                      cache_path=corpora.text_cache_path())
+        _cache[key] = EmbeddingScorer(content_pages_text(corpus=corpus),
+                                      cache_path=corpora.text_cache_path(corpus))
     return _cache[key]
 
 
 SCORERS = {"bm25": _bm25_scorer, "embedding": _embedding_scorer}
 
 
-def get_scorer(name="bm25"):
+def get_scorer(name="bm25", corpus=None):
     """Return an object with .score(query, ids) -> {page: score}."""
     if name not in SCORERS:
         raise ValueError(f"Unknown text scorer {name!r}; have {sorted(SCORERS)}")
-    return SCORERS[name]()
+    return SCORERS[name](corpus)
+
+
+def forget(corpus):
+    """Drop cached scorers for a corpus (used when an upload is removed)."""
+    for name in list(SCORERS):
+        _cache.pop((name, corpus), None)
 
 
 if __name__ == "__main__":

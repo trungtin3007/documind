@@ -45,6 +45,7 @@
   .label { font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
   .answer { font-size: 17px; white-space: pre-wrap; }
   .notfound { background: var(--warn-bg); border-color: #f0dcc0; color: var(--warn); }
+  .nf-hint { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0dcc0; font-size: 14px; }
   .error { background: var(--err-bg); border: 1px solid #f3cfcc; color: var(--err); border-radius: 12px; padding: 16px 20px; }
   .error .msg { font-weight: 600; }
   .cites { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; }
@@ -74,6 +75,15 @@
   .doc-src { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--accent); text-decoration: none; }
   .doc-src:hover { text-decoration: underline; }
   #docsSection { margin-top: 34px; }
+  .upload { margin-top: 14px; border: 1px dashed #c4ccd6; border-radius: 12px; padding: 14px 16px; background: var(--panel); }
+  .upload-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .upload-row button { background: #444d59; }
+  .upload-note { font-size: 13px; color: var(--muted); }
+  .active-doc { margin-top: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pill { background: #e7f0ff; color: #1c4fbb; border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 600; }
+  .linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; font-size: 13px; padding: 0; text-decoration: underline; }
+  .bar { height: 6px; background: #e9edf2; border-radius: 999px; overflow: hidden; margin-top: 10px; }
+  .bar > div { height: 100%; width: 0%; background: var(--accent); transition: width .3s ease; }
 </style>
 </head>
 <body>
@@ -96,6 +106,23 @@
     <code class="sample">What does the report show about the unemployment rate?</code>
   </div>
 
+  <div class="upload">
+    <div class="upload-row">
+      <input id="file" type="file" accept="application/pdf,.pdf" hidden>
+      <button id="pick" type="button">Upload your own PDF</button>
+      <span class="upload-note" id="uploadNote">PDFs up to 30 pages · max 20 MB · stored temporarily</span>
+    </div>
+    <div id="uploadProgress" hidden>
+      <div class="upload-note" id="uploadStatus">Uploading…</div>
+      <div class="bar"><div id="uploadBar"></div></div>
+    </div>
+    <div class="active-doc" id="activeDoc" hidden>
+      <span class="pill" id="activeName"></span>
+      <span class="upload-note" id="activePages"></span>
+      <button class="linkbtn" id="clearUpload" type="button">Back to the demo corpus</button>
+    </div>
+  </div>
+
   <section id="loading" hidden>
     <div class="card"><span class="spinner"></span>Searching pages and reading them…</div>
   </section>
@@ -108,6 +135,11 @@
     <div class="card" id="answerCard">
       <div class="label">Answer</div>
       <div class="answer" id="answer"></div>
+      <div class="nf-hint" id="notfoundHint" hidden>
+        This is a retrieval limit, not an empty document — the pages searched are shown below.
+        Try rephrasing with wording from the document, or the answer may be on a page that
+        wasn't retrieved.
+      </div>
     </div>
 
     <section id="citedWrap">
@@ -188,6 +220,67 @@ function labelOf(p) {
   return p.label || p.page;
 }
 
+function pageUrl(pageId) {
+  return '/page/' + pageId + (activeUpload ? '?upload_id=' + encodeURIComponent(activeUpload) : '');
+}
+
+// The id of the uploaded document currently being queried, or null for the demo.
+let activeUpload = null;
+
+fetch('/limits').then(r => r.json()).then(l => {
+  $('uploadNote').textContent =
+    `PDFs up to ${l.max_pages} pages · max ${l.max_mb} MB · stored temporarily`;
+}).catch(() => {});
+
+$('pick').addEventListener('click', () => $('file').click());
+$('file').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) upload(f);
+  e.target.value = '';           // allow re-picking the same file
+});
+$('clearUpload').addEventListener('click', () => {
+  activeUpload = null;
+  show($('activeDoc'), false);
+  show($('docsSection'), true);
+  show($('result'), false);
+  $('q').focus();
+});
+
+async function upload(f) {
+  show($('errorBox'), false);
+  show($('result'), false);
+  show($('uploadProgress'), true);
+  $('uploadStatus').textContent = `Uploading ${f.name}…`;
+  $('uploadBar').style.width = '15%';
+  $('pick').disabled = true;
+
+  const body = new FormData();
+  body.append('file', f);
+  try {
+    // Indexing is render + one embedding call per page, so this is slow;
+    // the bar is indeterminate progress, not a real byte count.
+    $('uploadStatus').textContent = 'Indexing pages — rendering and embedding…';
+    $('uploadBar').style.width = '55%';
+    const res = await fetch('/upload', { method: 'POST', body });
+    const data = await res.json();
+    if (!res.ok) { fail(data.error || 'Upload failed.', data.hint); return; }
+
+    $('uploadBar').style.width = '100%';
+    activeUpload = data.upload_id;
+    $('activeName').textContent = data.filename || 'your document';
+    $('activePages').textContent = `${data.pages} pages indexed — ask a question about it`;
+    show($('activeDoc'), true);
+    show($('docsSection'), false);
+    $('q').value = '';
+    $('q').focus();
+  } catch (err) {
+    fail('Upload failed.', String(err));
+  } finally {
+    $('pick').disabled = false;
+    setTimeout(() => { show($('uploadProgress'), false); $('uploadBar').style.width = '0%'; }, 400);
+  }
+}
+
 async function ask() {
   const question = q.value.trim();
   if (!question) { q.focus(); return; }
@@ -201,7 +294,7 @@ async function ask() {
     const res = await fetch('/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question })
+      body: JSON.stringify(activeUpload ? { question, upload_id: activeUpload } : { question })
     });
     const data = await res.json();
     if (!res.ok) { fail(data.error || ('Request failed (' + res.status + ')'), data.hint); return; }
@@ -223,6 +316,9 @@ function fail(msg, hint) {
 function render(data) {
   $('answer').textContent = data.answer || '(empty answer)';
   $('answerCard').classList.toggle('notfound', !data.found);
+  // On a miss, keep the retrieved pages visible and say why — otherwise it
+  // reads as "your document is empty" rather than "ranking missed it".
+  show($('notfoundHint'), !data.found);
 
   const cited = data.cited_pages || [];
   $('citedPlural').textContent = cited.length === 1 ? '' : 's';
@@ -233,9 +329,9 @@ function render(data) {
     const name = p.page;
     const fig = document.createElement('figure');
     const a = document.createElement('a');
-    a.href = '/page/' + name; a.target = '_blank'; a.rel = 'noopener';
+    a.href = pageUrl(name); a.target = '_blank'; a.rel = 'noopener';
     const img = document.createElement('img');
-    img.src = '/page/' + name;
+    img.src = pageUrl(name);
     img.alt = labelOf(p);
     a.appendChild(img);
     const cap = document.createElement('figcaption');
@@ -244,15 +340,16 @@ function render(data) {
     box.appendChild(fig);
   });
 
-  $('methodTag').textContent = data.method ? '· ' + data.method : '';
+  const readLabel = data.pages_read ? ` — ${data.pages_read} read by the model` : '';
+  $('methodTag').textContent = (data.method ? '· ' + data.method : '') + readLabel;
   const strip = $('strip');
   strip.innerHTML = '';
   (data.retrieved_pages || []).forEach((p, i) => {
     const a = document.createElement('a');
     a.className = 'thumb' + (cited.includes(p.page) ? ' is-cited' : '');
-    a.href = '/page/' + p.page; a.target = '_blank'; a.rel = 'noopener';
+    a.href = pageUrl(p.page); a.target = '_blank'; a.rel = 'noopener';
     const img = document.createElement('img');
-    img.src = '/page/' + p.page;
+    img.src = pageUrl(p.page);
     img.alt = labelOf(p);
     const meta = document.createElement('div');
     meta.className = 'meta';

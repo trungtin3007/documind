@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-08-17T16:51:26",
+  "run_at": "2026-08-20T23:02:46",
   "provisional": false,
   "summary_over": [
     "m01",
@@ -47,13 +47,13 @@
       "hit@3": 0.9642857142857143,
       "hit@5": 1.0,
       "mrr": 0.8125,
-      "cited_gold": 0.8571428571428571,
-      "n_judged": 26,
-      "correct": 0.8461538461538461,
-      "partial": 0.15384615384615385,
+      "cited_gold": 0.9285714285714286,
+      "n_judged": 28,
+      "correct": 0.8214285714285714,
+      "partial": 0.17857142857142858,
       "wrong": 0.0,
       "error": 0.0,
-      "ungraded": 0.07142857142857142
+      "ungraded": 0.0
     },
     "main": {
       "n": 13,
@@ -75,13 +75,13 @@
       "hit@3": 1.0,
       "hit@5": 1.0,
       "mrr": 0.95,
-      "cited_gold": 0.9,
-      "n_judged": 9,
+      "cited_gold": 1.0,
+      "n_judged": 10,
       "correct": 1.0,
       "partial": 0.0,
       "wrong": 0.0,
       "error": 0.0,
-      "ungraded": 0.1
+      "ungraded": 0.0
     },
     "ambiguous": {
       "n": 5,
@@ -89,13 +89,13 @@
       "hit@3": 0.8,
       "hit@5": 1.0,
       "mrr": 0.6166666666666667,
-      "cited_gold": 0.4,
-      "n_judged": 4,
-      "correct": 0.25,
-      "partial": 0.75,
+      "cited_gold": 0.6,
+      "n_judged": 5,
+      "correct": 0.2,
+      "partial": 0.8,
       "wrong": 0.0,
       "error": 0.0,
-      "ungraded": 0.2
+      "ungraded": 0.0
     },
     "by_author": {
       "claude": {
@@ -118,13 +118,13 @@
         "hit@3": 0.875,
         "hit@5": 1.0,
         "mrr": 0.6354166666666666,
-        "cited_gold": 0.5,
-        "n_judged": 6,
-        "correct": 0.3333333333333333,
-        "partial": 0.6666666666666666,
+        "cited_gold": 0.75,
+        "n_judged": 8,
+        "correct": 0.375,
+        "partial": 0.625,
         "wrong": 0.0,
         "error": 0.0,
-        "ungraded": 0.25
+        "ungraded": 0.0
       }
     }
   },
@@ -1266,11 +1266,13 @@
       "hit@3": true,
       "hit@5": true,
       "reciprocal_rank": 1.0,
-      "answer": "",
-      "cited_pages": [],
-      "cited_gold": false,
-      "grade": "ungraded",
-      "judge_reason": "Retrieval-only run (--no-generate).",
+      "answer": "When conditioned only on the problem, reproducing a 16-token reasoning span would still require on the order of 10^{10} queries on HLE, and, on AIME 2025, between 10^9 and 10^{12} queries depending on whether the target is the decoded Opus 4.8 or the GPT-5.6 Sol trace.",
+      "cited_pages": [
+        "page_038.png"
+      ],
+      "cited_gold": true,
+      "grade": "correct",
+      "judge_reason": "The system answer accurately states that it requires on the order of 10^10 queries on HLE (and 10^9 to 10^12 on AIME 2025), matching the reference answer.",
       "author": "developer"
     },
     {
@@ -1406,11 +1408,13 @@
       "hit@3": true,
       "hit@5": true,
       "reciprocal_rank": 0.5,
-      "answer": "",
-      "cited_pages": [],
-      "cited_gold": false,
-      "grade": "ungraded",
-      "judge_reason": "Retrieval-only run (--no-generate).",
+      "answer": "The authors propose a \"Context-Bound Envelope Defense\" that re-binds every envelope to its originating user, session, and conversational position, complemented by operational measures for legacy data, backwards compatibility, and training-time hardening (Page 19, Table 2). Specifically, for each issue, they recommend the following mitigations:\n\n1. **Cross-user leakage:** \n- Embed `user_id` in AEAD associated data at issuance.\n- On replay, compare bound identity to authenticated caller.\n- Reject the envelope on any mismatch.\n\n2. **Cross-session leakage:** \n- Hash-chain each envelope to `session_id` and its predecessor.\n- Enforce ordinality server-side.\n- Retain only Merkle roots after compaction so surviving spans stay verifiable.\n\n3. **Legacy public/enterprise datasets:** \n- Rotate every pre-fix signing key.\n- Refuse to decode any envelope under a retired key ID.\n- (Optional) Offer identity-verified re-signing for enterprise archives.\n\n4. **Backwards compatibility:** \n- Accept both legacy and context-bound envelopes during a fixed deprecation window.\n- Expose an opt-in batch re-signature endpoint.\n- Re-issue only after confirming the requester owns the original session.\n\n5. **Model-level compliance:** \n- Post-train models to recognise transcription-style prompts (e.g., `<thinking-copy>`).\n- Refuse the request irrespective of envelope validity.\n\n6. **Nonce predictability:** \n- Draw a high-entropy nonce from a CSPRNG for every block.\n- Enforce server-side uniqueness before the envelope is issued.",
+      "cited_pages": [
+        "page_019.png"
+      ],
+      "cited_gold": true,
+      "grade": "partial",
+      "judge_reason": "The system answer details the context-bound envelope mitigations from Appendix A and model-level post-training, but omits Section 5.5's architectural recommendations (opaque lookup IDs) and infrastructure guardrails (API gateway cross-model isolation).",
       "author": "developer"
     }
   ]

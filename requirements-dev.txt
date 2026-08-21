@@ -4,10 +4,7 @@
 # Install with:  pip install -r requirements-dev.txt
 
 -r requirements.txt
-
-# Corpus building: PDF -> page images, page text extraction
-pymupdf==1.28.2
-pillow==12.3.0
+# pymupdf and pillow now live in requirements.txt: /upload needs them at run time.
 
 # Semantic text scoring (hybrid-embedding). Pulls torch; on Linux install the
 # CPU wheel explicitly or pip fetches multi-GB CUDA builds:

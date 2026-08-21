@@ -79,7 +79,7 @@ def page_number(page):
     return corpora.page_number(page)
 
 
-def page_labels(retrieved):
+def page_labels(retrieved, corpus=None):
     """[(page_id, cite_key, tag)] — cite_key is the number the model must cite.
 
     Single-document corpus: the key is the real page number, exactly as before,
@@ -104,21 +104,21 @@ def system_instruction(retrieved):
     return SYSTEM_INSTRUCTION + (MULTIDOC_INSTRUCTION if multi else "")
 
 
-def _build_input(question, retrieved):
+def _build_input(question, retrieved, corpus=None):
     """Question plus one labelled image block per retrieved page."""
     parts = [{
         "type": "text",
         "text": f"Question: {question}\n\nAnswer using only the {len(retrieved)} page images below.",
     }]
-    for page, _, tag in page_labels(retrieved):
-        with open(retrieval.page_path(page), "rb") as f:
+    for page, _, tag in page_labels(retrieved, corpus):
+        with open(retrieval.page_path(page, corpus), "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
         parts.append({"type": "text", "text": tag})
         parts.append({"type": "image", "data": data, "mime_type": "image/png"})
     return parts
 
 
-def answer(question, k=TOP_K, retrieved=None, method=None):
+def answer(question, k=TOP_K, retrieved=None, method=None, corpus=None):
     """Retrieve the k best pages, read them with the VLM, and answer from them.
 
     Pass `retrieved` (a list of (page, score)) to reuse pages already fetched
@@ -126,13 +126,13 @@ def answer(question, k=TOP_K, retrieved=None, method=None):
     """
     if retrieved is None:
         retrieved = retrieval.search_by_method(
-            question, k=k, method=method or retrieval.DEFAULT_METHOD)
+            question, k=k, method=method or retrieval.DEFAULT_METHOD, corpus=corpus)
 
     result = api_retry.call_with_retry(
         _get_client().interactions.create,
         model=MODEL,
         system_instruction=system_instruction(retrieved),
-        input=_build_input(question, retrieved),
+        input=_build_input(question, retrieved, corpus),
         generation_config={"seed": SEED},
         response_format={
             "type": "text",
@@ -154,7 +154,7 @@ def answer(question, k=TOP_K, retrieved=None, method=None):
 
     # Only trust citations pointing at pages we actually sent. The cite keys are
     # unique per prompt, so this is unambiguous even across documents.
-    sent = {key: page for page, key, _ in page_labels(retrieved)}
+    sent = {key: page for page, key, _ in page_labels(retrieved, corpus)}
     cited = [sent[n] for n in parsed.get("cited_pages", []) if n in sent]
     if not parsed.get("found", False):
         cited = []

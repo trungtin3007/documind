@@ -41,6 +41,27 @@ def price(page_ids, corpus):
     return total, total * PIXEL_RATE
 
 
+def embed_page_ids(page_ids, corpus, client=None, progress=None):
+    """Embed the given page ids and return a float32 matrix, in order."""
+    vo = client or voyageai.Client()
+    vectors = []
+    for n, pid in enumerate(page_ids, 1):
+        with Image.open(corpora.page_path(pid, corpus)) as img:
+            result = vo.multimodal_embed(inputs=[[img]], model=MODEL, input_type="document")
+        vectors.append(np.asarray(result.embeddings[0], dtype=np.float32))
+        if progress:
+            progress(n, len(page_ids), pid)
+    return np.stack(vectors).astype(np.float32) if vectors else np.zeros((0, 0), dtype=np.float32)
+
+
+def write_index(index_dir, page_ids, matrix):
+    """Persist vectors + their page-id order to an index directory."""
+    os.makedirs(index_dir, exist_ok=True)
+    np.save(os.path.join(index_dir, "embeddings.npy"), matrix)
+    with open(os.path.join(index_dir, "pages.json"), "w") as f:
+        json.dump(list(page_ids), f)
+
+
 def load_existing(index_dir):
     """({page_id: vector}, dim) from a previous build, or ({}, None)."""
     emb_path = os.path.join(index_dir, "embeddings.npy")
@@ -87,19 +108,14 @@ def main():
         print("\nNothing new to embed; index is up to date.")
         return
 
-    vo = voyageai.Client()
-    for n, pid in enumerate(todo, 1):
-        with Image.open(corpora.page_path(pid, corpus)) as img:
-            result = vo.multimodal_embed(inputs=[[img]], model=MODEL, input_type="document")
-        cached[pid] = np.asarray(result.embeddings[0], dtype=np.float32)
-        print(f"[{n}/{len(todo)}] embedded {pid}")
+    fresh = embed_page_ids(todo, corpus,
+                           progress=lambda n, total, pid: print(f"[{n}/{total}] embedded {pid}"))
+    for pid, vec in zip(todo, fresh):
+        cached[pid] = vec
 
-    os.makedirs(index_dir, exist_ok=True)
-    ordered = [p for p in page_ids]
+    ordered = list(page_ids)
     matrix = np.stack([cached[p] for p in ordered]).astype(np.float32)
-    np.save(os.path.join(index_dir, "embeddings.npy"), matrix)
-    with open(os.path.join(index_dir, "pages.json"), "w") as f:
-        json.dump(ordered, f)
+    write_index(index_dir, ordered, matrix)
 
     print(f"\nDone. {matrix.shape[0]} vectors of dim {matrix.shape[1]} "
           f"-> {os.path.relpath(index_dir)}/")

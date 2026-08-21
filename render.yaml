@@ -12,8 +12,14 @@
 # To switch: install requirements-dev.txt, raise the plan, and set
 # DOCUMIND_METHOD=hybrid-embedding.
 #
-# Secrets (VOYAGE_API_KEY, GEMINI_API_KEY) are marked sync:false and must be
-# set in the Render dashboard. They are never stored in this file.
+# Secrets are marked sync:false and must be set in the Render dashboard. They
+# are never stored in this file.
+#
+# User uploads are stored in Cloudflare R2 so they survive sleeps and redeploys.
+# If the four R2_* variables are absent or wrong, storage.py falls back to local
+# disk: uploads then do not survive a restart, but the fixed demo corpus and
+# everything else keep working. A bad R2 config degrades uploads, it does not
+# take down the demo.
 
 services:
   - type: web
@@ -43,4 +49,13 @@ services:
       - key: VOYAGE_API_KEY
         sync: false
       - key: GEMINI_API_KEY
+        sync: false
+      # Cloudflare R2 — durable storage for user uploads. Set all four, or none.
+      - key: R2_ENDPOINT
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
         sync: false

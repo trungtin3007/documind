@@ -25,7 +25,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT = "single"
 
 CORPORA = {
-    "single": {"pages": "pages", "index": "index", "nested": False},
+    "single": {"pages": "pages", "index": "index", "nested": False,
+               "text": "pages_text.json"},                 # historical location
     "demo": {"pages": "pages_demo", "index": "index_demo", "nested": True},
     "demo-full": {"pages": "pages_demo_full", "index": "index_demo_full", "nested": True},
 }
@@ -98,10 +99,17 @@ def page_path(page_id, name=None):
 
 
 def text_path(name=None):
-    """Where the extracted page text for this corpus lives."""
+    """Where the extracted page text for this corpus lives.
+
+    Each corpus states its own location. This used to be derived from `nested`,
+    which meant the single corpus and every (non-nested) upload corpus resolved
+    to the same root file — so indexing an upload overwrote the eval corpus's
+    page text.
+    """
     cfg = config(name)
-    return os.path.join(BASE_DIR, "pages_text.json") if not cfg["nested"] \
-        else os.path.join(index_dir(name), "pages_text.json")
+    if cfg.get("text"):
+        return os.path.join(BASE_DIR, cfg["text"])
+    return os.path.join(index_dir(name), "pages_text.json")
 
 
 def text_cache_path(name=None):

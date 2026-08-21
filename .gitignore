@@ -46,3 +46,9 @@ verify/
 # scratch
 *.log
 .DS_Store
+
+# Stage 2a: temporary local uploads (per-upload PDFs, page images, indexes)
+uploads/
+
+# local hydration cache for R2-backed uploads (safe to delete)
+.upload_cache/
