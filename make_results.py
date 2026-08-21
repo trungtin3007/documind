@@ -171,6 +171,16 @@ def main():
     h3_base = sum(base_rows[i]["hit@3"] for i in shared_ids)
     h3_adopt = sum(adopted_rows[i]["hit@3"] for i in shared_ids)
 
+    n_judged = summary["overall"]["n_judged"]
+    if n_judged >= n_total:
+        coverage_note = (f"- **Answer grades cover all {n_total} questions.** Answer-quality rates are "
+                         f"computed over graded rows only; with full coverage they describe the whole set.")
+    else:
+        coverage_note = (f"- **Answer grades cover {n_judged} of {n_total} questions.** The rest hit the "
+                         f"daily API quota during grading and are recorded as `ungraded`; answer-quality "
+                         f"rates are computed over graded rows only, so coverage is reduced rather than "
+                         f"scores being silently deflated. Retrieval metrics cover all {n_total}.")
+
     unamb = [r for r in scored if r["scope"] in ("main", "appendix")]
     unamb_hit3 = sum(r["hit@3"] for r in unamb) / len(unamb)
     unamb_correct = sum(r["grade"] == "correct" for r in unamb) / len(unamb)
@@ -262,7 +272,7 @@ Lexical scoring pushes both gold pages to the bottom of its candidate list, with
 - **One document.** All {n_total} questions are about a single {n_pages}-page paper. Nothing here shows the effect generalises to other documents, and the main/appendix split is a property of academic papers specifically.
 - **Judge not validated against human grades.** The judge's correct/partial/wrong calls have not been checked against a human rater, so answer-quality numbers carry unmeasured judge error. One known case: `a01` was graded `partial` for following the paper's own prose rather than the gold answer's phrasing.
 - **Gold pages are permissive.** Several questions list multiple acceptable gold pages, which makes a "hit" easier than a single-target metric would.
-- **Answer grades cover {summary['overall']['n_judged']} of {n_total} questions.** The rest hit the daily API quota during grading and are recorded as `ungraded`; answer-quality rates are computed over graded rows only, so coverage is reduced rather than scores being silently deflated. Retrieval metrics cover all {n_total}.
+{coverage_note}
 - **The two text scorers are complementary, and only one is used.** BM25 keeps an edge on distinctive rare tokens: on `u02`, whose answer hinges on model names like "GLM-5.2", lexical scoring lifts the gold page to rank 1 while the embedding scorer reaches only rank 3. Exact-token matching and semantic similarity fail in different places, so fusing all three rankings — visual, lexical, semantic — is the obvious next experiment. Not done here; the adopted configuration uses semantic scoring only.
 
 **Next step (Week 5): a web interface, and a larger eval set.** The re-ranker work is done and adopted; what limits every conclusion in this document now is n={n_total} over one document, not the retrieval design. The highest-value next measurement is more questions across more documents, which would also make the complementary-scorer experiment above worth running. Interface work (answer shown beside the cited page) is the demo-facing task.

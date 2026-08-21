@@ -1,6 +1,6 @@
 # DocuMind — Evaluation Results
 
-*Generated 2026-08-17 by `make_results.py` from `eval_results.json` (run 2026-08-17T16:51:26). Every number here is read from that file.*
+*Generated 2026-08-20 by `make_results.py` from `eval_results.json` (run 2026-08-20T23:02:46). Every number here is read from that file.*
 
 ## What DocuMind is
 
@@ -23,10 +23,10 @@ DocuMind answers questions about complex PDFs — the kind with tables and chart
 
 | group | n | hit@1 | hit@3 | hit@5 | MRR | cites gold | correct | partial | wrong |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| **overall** | 28 | 68% | 96% | 100% | 0.81 | 86% | 85% | 15% | 0% |
+| **overall** | 28 | 68% | 96% | 100% | 0.81 | 93% | 82% | 18% | 0% |
 | main | 13 | 62% | 100% | 100% | 0.78 | 100% | 92% | 8% | 0% |
-| appendix | 10 | 90% | 100% | 100% | 0.95 | 90% | 100% | 0% | 0% |
-| ambiguous | 5 | 40% | 80% | 100% | 0.62 | 40% | 25% | 75% | 0% |
+| appendix | 10 | 90% | 100% | 100% | 0.95 | 100% | 100% | 0% | 0% |
+| ambiguous | 5 | 40% | 80% | 100% | 0.62 | 60% | 20% | 80% | 0% |
 
 ## Retrieval method comparison
 
@@ -70,15 +70,15 @@ Counts, not percentages — at this sample size one question is worth 4 points o
 | group | n | hit@3 | correct |
 |---|---:|---:|---:|
 | `claude` (drafted from the gold pages) | 20 | **100%** | 100% |
-| `developer` (written independently) | 8 | **88%** | 33% |
+| `developer` (written independently) | 8 | **88%** | 38% |
 
-Questions written from the pages score 100% hit@3; questions written independently score 88%. The gap is 12 points on retrieval and 67 points on answer correctness. **Any evaluation built only from page-derived questions would have overstated this system's quality.** The two groups are not otherwise matched — the developer set is also where the `ambiguous` questions are concentrated — so this gap measures phrasing and topic difficulty together, not phrasing alone.
+Questions written from the pages score 100% hit@3; questions written independently score 88%. The gap is 12 points on retrieval and 62 points on answer correctness. **Any evaluation built only from page-derived questions would have overstated this system's quality.** The two groups are not otherwise matched — the developer set is also where the `ambiguous` questions are concentrated — so this gap measures phrasing and topic difficulty together, not phrasing alone.
 
 ## Key finding
 
 **Retrieval and answers are strong on questions with an unambiguous home in the document, and degrade when a question's terms appear in both the main paper and the appendix.**
 
-On the 23 unambiguous questions (`main` + `appendix`), hit@3 is 100%. On the 5 `ambiguous` questions it is 80%. Citation quality moves the same way: a gold page is cited on 100% of `main` and 90% of `appendix` questions, but only 40% of `ambiguous` ones.
+On the 23 unambiguous questions (`main` + `appendix`), hit@3 is 100%. On the 5 `ambiguous` questions it is 80%. Citation quality moves the same way: a gold page is cited on 100% of `main` and 100% of `appendix` questions, but only 60% of `ambiguous` ones.
 
 The mechanism is visible in the retrieved page lists. When a term appears in both halves of the paper, the appendix — 98 of the paper's 116 pages — supplies many plausible-looking pages that crowd the correct one out of the top 3. Generation is not the weak link: it answers faithfully from whatever pages it is handed, and when the gold page is missing it usually says so rather than inventing an answer.
 
@@ -119,11 +119,11 @@ Lexical scoring pushes both gold pages to the bottom of its candidate list, with
 
 **`u08` — What defenses or mitigations do the authors recommend against this attack?**
 
-- Gold pages: p010, p011, p019, p020 · first gold page at rank **2** · graded **ungraded**
+- Gold pages: p010, p011, p019, p020 · first gold page at rank **2** · graded **partial**
 - Retrieved: p003 (0.032), p019 (0.032), p001 (0.031), p009 (0.031), p002 (0.030)
-- Cited: none
-- Answer: “”
-- Judge: Retrieval-only run (--no-generate).
+- Cited: p019
+- Answer: “The authors propose a "Context-Bound Envelope Defense" that re-binds every envelope to its originating user, session, and conversational position, complemented by operational measures for legacy data, backwards compatibility, and training-time hardening (Page 19, Table 2). Specifically, for each issue, they recommend t…”
+- Judge: The system answer details the context-bound envelope mitigations from Appendix A and model-level post-training, but omits Section 5.5's architectural recommendations (opaque lookup IDs) and infrastructure guardrails (API gateway cross-model isolation).
 
 **`u01` — Which language models were the authors able to steal reasoning traces from?**
 
@@ -139,7 +139,7 @@ Lexical scoring pushes both gold pages to the bottom of its candidate list, with
 - **One document.** All 28 questions are about a single 116-page paper. Nothing here shows the effect generalises to other documents, and the main/appendix split is a property of academic papers specifically.
 - **Judge not validated against human grades.** The judge's correct/partial/wrong calls have not been checked against a human rater, so answer-quality numbers carry unmeasured judge error. One known case: `a01` was graded `partial` for following the paper's own prose rather than the gold answer's phrasing.
 - **Gold pages are permissive.** Several questions list multiple acceptable gold pages, which makes a "hit" easier than a single-target metric would.
-- **Answer grades cover 26 of 28 questions.** The rest hit the daily API quota during grading and are recorded as `ungraded`; answer-quality rates are computed over graded rows only, so coverage is reduced rather than scores being silently deflated. Retrieval metrics cover all 28.
+- **Answer grades cover all 28 questions.** Answer-quality rates are computed over graded rows only; with full coverage they describe the whole set.
 - **The two text scorers are complementary, and only one is used.** BM25 keeps an edge on distinctive rare tokens: on `u02`, whose answer hinges on model names like "GLM-5.2", lexical scoring lifts the gold page to rank 1 while the embedding scorer reaches only rank 3. Exact-token matching and semantic similarity fail in different places, so fusing all three rankings — visual, lexical, semantic — is the obvious next experiment. Not done here; the adopted configuration uses semantic scoring only.
 
 **Next step (Week 5): a web interface, and a larger eval set.** The re-ranker work is done and adopted; what limits every conclusion in this document now is n=28 over one document, not the retrieval design. The highest-value next measurement is more questions across more documents, which would also make the complementary-scorer experiment above worth running. Interface work (answer shown beside the cited page) is the demo-facing task.
